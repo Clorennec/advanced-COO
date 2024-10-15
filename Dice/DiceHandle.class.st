@@ -9,18 +9,27 @@ Class {
 }
 
 { #category : 'arithmetic' }
-DiceHandle >> + aDiceHandle [
+DiceHandle >> + aDicable [
 
-	| newHandle |
-	newHandle := DiceHandle new.
-	dices do: [ :eachDice | newHandle addDice: eachDice ].
-	aDiceHandle dices do: [ :eachDice | newHandle addDice: eachDice ].
-	^ newHandle
+	^ aDicable addWithHandle: self
 ]
 
 { #category : 'adding' }
 DiceHandle >> addDice: aDice [
 	dices add: aDice.
+]
+
+{ #category : 'adding' }
+DiceHandle >> addWithDice: aDice [
+	^ self addDice: aDice 
+	
+]
+
+{ #category : 'adding' }
+DiceHandle >> addWithHandle: aHandle [
+	aHandle dices do: [ :eachDice | 
+		self addDice: eachDice ].
+	^ self
 ]
 
 { #category : 'as yet unclassified' }
@@ -33,6 +42,12 @@ DiceHandle >> dices [
 	^dices 
 ]
 
+{ #category : 'accessing' }
+DiceHandle >> faces [
+
+	^ dices sum: [ :eachDice | eachDice faces ]
+]
+
 { #category : 'initialization' }
 DiceHandle >> initialize [
     dices := OrderedCollection new.
@@ -40,11 +55,6 @@ DiceHandle >> initialize [
 
 { #category : 'as yet unclassified' }
 DiceHandle >> roll [
-    | total |
-    total := 0.
-    
+	^dices sum: [ :eachDice | eachDice roll ].
 
-    dices do: [ :eachDice | total := total + eachDice roll ].
-    
-    ^ total.
 ]

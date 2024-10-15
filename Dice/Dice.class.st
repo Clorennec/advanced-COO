@@ -17,6 +17,23 @@ Dice class >> withFaces: aNumber [
 	^ dice
 ]
 
+{ #category : 'arithmetic' }
+Dice >> + aDicable [
+
+	^ aDicable addWithDice: self
+]
+
+{ #category : 'adding' }
+Dice >> addWithDice: aDice [
+	^ DiceHandle new addDice: self; addDice: aDice
+]
+
+{ #category : 'adding' }
+Dice >> addWithHandle: aHandle [
+	^aHandle addDice: self
+	
+]
+
 { #category : 'accessing' }
 Dice >> faces [
 
