@@ -16,26 +16,28 @@ Class {
 
 { #category : 'initialization' }
 SpriteElement >> initializeWith: aSpriteCollection [
-
 	spriteCollection := aSpriteCollection.
-       currentIndex := 1.
-       totalImages := spriteCollection images size.
-       self extent: 100@100.
-       self background: (spriteCollection images at: currentIndex).
-       running := false. "Permet de contrôler l'animation"
+	totalImages := spriteCollection images size.
+	currentIndex := (1 to: totalImages) atRandom.
+	position := 0 @ 0.
+	velocity := 5 @ 5.
+	self extent: 100 @ 100.
+	self background: (spriteCollection images at: currentIndex).
+	running := false
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 SpriteElement >> initializeWith: aSpriteCollection size: aSize [
-       spriteCollection := aSpriteCollection.
-       currentIndex := 1.
-       totalImages := spriteCollection images size.
-       position := 0@0.
-       velocity := 5@5.
-       size := aSize ifNil: [ 100@100 ]. "Définir une taille par défaut si non spécifiée"
-       self extent: size.
-       self background: (spriteCollection images at: currentIndex).
-       running := false.
+
+	spriteCollection := aSpriteCollection.
+	totalImages := spriteCollection images size.
+	currentIndex := (1 to: totalImages) atRandom.
+	position := 0 @ 0.
+	velocity := 5 @ 5.
+	size := aSize ifNil: [ 100 ].
+	self extent: size @ size.
+	self background: (spriteCollection images at: currentIndex).
+	running := false
 ]
 
 { #category : 'as yet unclassified' }
