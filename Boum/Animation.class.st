@@ -3,7 +3,6 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'asteroids',
-		'explosions',
 		'process',
 		'space'
 	],
@@ -168,9 +167,8 @@ Animation >> initialize [
 
 	super initialize.
 	space := BlSpace new.
-	space root background: Color white.
-	asteroids := OrderedCollection new.
-	explosions := OrderedCollection new
+	space root background: Color black .
+	asteroids := OrderedCollection new
 ]
 
 { #category : 'initialization' }
@@ -208,7 +206,6 @@ Animation >> triggerExplosionAt: aPosition [
 	| explosion |
 	explosion := Explosion new.
 	explosion position: aPosition.
-	explosions add: explosion.
 	space root addChild: explosion.
 	explosion startAnimation
 ]

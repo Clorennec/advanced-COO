@@ -9,71 +9,54 @@ Class {
 	#package : 'Boum'
 }
 
-{ #category : 'adding' }
-App >> addAsteroid [
-	| asteroid |
-	asteroid := Asteroid new.
-	asteroid position: self generateOffScreenPosition.
-	animation space root addChild: asteroid.
-	asteroid startAnimation
-]
-
 { #category : 'as yet unclassified' }
 App >> createRandomAsteroid [
-	| newAsteroid startPosition direction speed |
+
+	| newAsteroid startPosition direction speed centerPosition deltaX deltaY |
 	newAsteroid := Asteroid new.
-
-	"Positionner l'astéroïde en dehors de l'écran (par exemple, au hasard autour des bords)"
 	startPosition := self randomPositionOutsideScreen.
-	newAsteroid position: startPosition.
+	centerPosition := (animation space width / 2) @ (animation space height / 2).
 
-	"Choisir une direction et une vitesse aléatoires"
-	direction := (0 to: 360) atRandom degreesToRadians.
+	deltaX := centerPosition x - startPosition x.
+	deltaY := centerPosition y - startPosition y.
+
+	direction := (deltaY / deltaX) arcTan.
 	speed := (1 to: 5) atRandom.
 	newAsteroid direction: direction.
 	newAsteroid speed: speed.
 
-	"Ajouter à l'animation et à l'espace"
 	animation addAsteroid: newAsteroid.
 	animation space root addChild: newAsteroid.
-
+	newAsteroid position: startPosition.
 	newAsteroid startAnimation
 ]
 
-{ #category : 'as yet unclassified' }
-App >> generateOffScreenPosition [
-
-	| screenBounds randPosition side |
-	screenBounds := animation space root boundsInSpace.
-	side := #( top right bottom left ) atRandom. "Choisir un côté aléatoire de l'écran"
-	randPosition := side caseOf: {
-			                ([ #top ]
-			                 -> [ (0 to: screenBounds x) atRandom @ -100 ]).
-			                ([ #right ]
-			                 -> [
-			                 screenBounds x + 100
-			                 @ (0 to: screenBounds y) atRandom ]).
-			                ([ #bottom ]
-			                 -> [
-			                 (0 to: screenBounds x) atRandom @ screenBounds y
-			                 + 100 ]).
-			                ([ #left ]
-			                 -> [ -100 @ (0 to: screenBounds y) atRandom ]) }.
-	^ randPosition
+{ #category : 'initialization' }
+App >> initialize [ 
+	animation := Animation new.
+	animation space
+		addEventHandlerOn: BlSpaceClosedEvent
+		do: [ :event | self stop ].
 ]
 
 { #category : 'as yet unclassified' }
 App >> randomPositionOutsideScreen [
+
 	| screenWidth screenHeight side randomPosition |
-	screenWidth := animation space root extent x.
-	screenHeight := animation space root extent y.
+	screenWidth := animation space extent x.
+	screenHeight := animation space extent y.
 	side := (1 to: 4) atRandom.
 
-	side = 1 ifTrue: [ randomPosition := (-50)@(1 to: screenHeight) atRandom ].
-	side = 2 ifTrue: [ randomPosition := (screenWidth + 50)@(1 to: screenHeight) atRandom ].
-	side = 3 ifTrue: [ randomPosition := (1 to: screenWidth) atRandom@(-50) ].
-	side = 4 ifTrue: [ randomPosition := (1 to: screenWidth) atRandom@(screenHeight + 50) ].
-
+	side = 1 ifTrue: [
+		randomPosition := 0 @ (1 to: screenHeight) atRandom ].
+	side = 2 ifTrue: [
+		randomPosition := (screenWidth - 100) @ (1 to: screenHeight) atRandom ].
+	side = 3 ifTrue: [
+		randomPosition := (1 to: screenWidth) atRandom @ 0 ].
+	side = 4 ifTrue: [
+		randomPosition := (1 to: screenWidth) atRandom
+		                  @ (screenHeight - 100) ].
+	randomPosition traceCr.
 	^ randomPosition
 ]
 
@@ -81,7 +64,6 @@ App >> randomPositionOutsideScreen [
 App >> run [
 
 	| ast1 ast2 |
-	animation := Animation new.
 
 	ast1 := Asteroid new.
 	ast2 := Asteroid new.
@@ -109,5 +91,6 @@ App >> run [
 { #category : 'running' }
 App >> stop [
 
+	asteroidCreationProcess ifNotNil: [ asteroidCreationProcess terminate ].
 	animation stop
 ]

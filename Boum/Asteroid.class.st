@@ -12,6 +12,11 @@ Class {
 	#package : 'Boum'
 }
 
+{ #category : 'accessing' }
+Asteroid >> direction: aDirection [
+	direction := aDirection 
+]
+
 { #category : 'initialization' }
 Asteroid >> initialize [
 
@@ -30,18 +35,26 @@ Asteroid >> initialize [
 			spriteCollection add: (spriteSheet copy: (Rectangle
 						  origin: j - 1 * imageWidth @ (i - 1 * imageHeight)
 						  extent: imageWidth @ imageHeight)) ] ].
+	self background: (spriteCollection at: currentIndex).
 	self extent: 102 @ 102
 ]
 
 { #category : 'accessing' }
 Asteroid >> move [
 
-	| deltaX deltaY newPosition |
+	| deltaX deltaY oldPosition |
 	deltaX := speed * direction cos.
 	deltaY := speed * direction sin.
-	newPosition := self position + (deltaX @ deltaY).
-	self position: newPosition.
+	oldPosition := self position.
+	self haltIf:[self position = (0@0)].
+	self position: self position + (deltaX @ deltaY).
+	self position: self position + (deltaX @ deltaY).
+]
 
+{ #category : 'accessing' }
+Asteroid >> speed: aSpeed [
+
+	speed := aSpeed 
 ]
 
 { #category : 'as yet unclassified' }
