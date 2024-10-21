@@ -12,22 +12,29 @@ Class {
 { #category : 'running' }
 App >> run [
 
+	| ast1 ast2 |
 	space := BlSpace new.
 	animation := Animation new.
 
-	1 to: 10 do: [ :i |
-		| asteroid |
-		asteroid := SpriteElement new.
-		asteroid initializeWith: (SpriteCollection
-				 path: 'C:\Users\louis\Downloads\o001Sp.png'
-				 size: 10
-				 numberOfImages: 100).
-		asteroid position: i * 50 @ 0.
-		asteroid velocity: 5 @ 5.
-		animation addSprite: asteroid.
-		space root addChild: asteroid.
-		asteroid startAnimation ].
+	ast1 := Asteroid new.
+	ast2 := Asteroid new.
+	ast2 position: 50@50.
+	
+	animation addAsteroid: ast1. 
+	animation addAsteroid: ast2.
+	
+	space root addChild: ast1.
+	space root addChild: ast2.
+	
+	ast1 startAnimation.
+	ast2 startAnimation.
 
 	animation start.
 	space show
+]
+
+{ #category : 'running' }
+App >> stop [
+
+	animation stop
 ]

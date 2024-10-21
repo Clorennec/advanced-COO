@@ -2,35 +2,34 @@ Class {
 	#name : 'Animation',
 	#superclass : 'Object',
 	#instVars : [
-		'sprites',
-		'explosionSprites'
+		'asteroids',
+		'explosionSprites',
+		'process'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
 
 { #category : 'initialization' }
-Animation >> addSprite: aSprite [
-       sprites add: aSprite.
+Animation >> addAsteroid: aSprite [
+
+	asteroids add: aSprite
 ]
 
 { #category : 'initialization' }
 Animation >> checkCollisions [
-   sprites withIndexDo: [ :sprite1 :i | 
-      (i + 1) to: sprites size do: [ :j | 
-         | sprite2 |
-         sprite2 := sprites at: j.
-         (self detectCollisionBetween: sprite1 and: sprite2) ifTrue: [
-            self triggerExplosionAt: sprite1 position.
-            self triggerExplosionAt: sprite2 position.
-            sprite1 stopAnimation.
-            sprite2 stopAnimation ] ] ].
 
-]
-
-{ #category : 'initialization' }
-Animation >> createExplosionSpriteCollection [ 
-       ^ SpriteCollection path: 'C:\Users\louis\Downloads\expl001Sp_Fire_fixed.png' size: 6 numberOfImages: 42.
+	asteroids withIndexDo: [ :sprite1 :i |
+		i + 1 to: asteroids size do: [ :j |
+			| sprite2 |
+			sprite2 := asteroids at: j.
+			(self detectCollisionBetween: sprite1 and: sprite2) ifTrue: [
+				self triggerExplosionAt: sprite1 position.
+				self triggerExplosionAt: sprite2 position.
+				sprite1 stopAnimation.
+				sprite2 stopAnimation.
+				asteroids remove: sprite1.
+				asteroids remove: sprite2 ] ] ]
 ]
 
 { #category : 'initialization' }
@@ -136,25 +135,33 @@ Animation >> detectPixelCollisionBetween: sprite1 and: sprite2 [
 { #category : 'initialization' }
 Animation >> initialize [
 
-	sprites := OrderedCollection new.
+	super initialize.
+	asteroids := OrderedCollection new.
 	explosionSprites := OrderedCollection new
 ]
 
 { #category : 'initialization' }
 Animation >> start [
 
-	[
+	process := [
 	[ true ] whileTrue: [
 		self checkCollisions.
 		50 milliSeconds wait ] ] fork
 ]
 
 { #category : 'initialization' }
+Animation >> stop [
+
+	process terminate.
+	asteroids do: [ :sprite | sprite stopAnimation ]
+]
+
+{ #category : 'initialization' }
 Animation >> triggerExplosionAt: aPosition [
-       | explosionSprite |
-       explosionSprite := SpriteElement new.
-       explosionSprite initializeWith: (self createExplosionSpriteCollection).
-       explosionSprite position: aPosition.
-       explosionSprite startAnimation.
-       explosionSprites add: explosionSprite.
+
+	| explosion |
+	explosion := Explosion new.
+	explosion position: aPosition.
+	explosionSprites add: explosion.
+	explosion startAnimation
 ]
