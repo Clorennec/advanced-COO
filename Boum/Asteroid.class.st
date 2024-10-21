@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'spriteCollection',
 		'process',
-		'currentIndex'
+		'currentIndex',
+		'speed',
+		'direction'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -21,12 +23,25 @@ Asteroid >> initialize [
 		               'C:\Users\louis\Downloads\o001Sp.png'.
 	imageWidth := spriteSheet extent x / 10.
 	imageHeight := spriteSheet extent y / 10.
+	direction := (0 to: 360) atRandom degreesToRadians.
+	speed := (1 to: 5) atRandom.
 	1 to: 10 do: [ :i |
 		1 to: 10 do: [ :j |
 			spriteCollection add: (spriteSheet copy: (Rectangle
 						  origin: j - 1 * imageWidth @ (i - 1 * imageHeight)
 						  extent: imageWidth @ imageHeight)) ] ].
-	self extent: 100@100
+	self extent: 102 @ 102
+]
+
+{ #category : 'accessing' }
+Asteroid >> move [
+
+	| deltaX deltaY newPosition |
+	deltaX := speed * direction cos.
+	deltaY := speed * direction sin.
+	newPosition := self position + (deltaX @ deltaY).
+	self position: newPosition.
+
 ]
 
 { #category : 'as yet unclassified' }
@@ -42,8 +57,8 @@ Asteroid >> startAnimation: anInteger [
 	           [ true ] whileTrue: [
 		           currentIndex := currentIndex + 1.
 		           currentIndex > 100 ifTrue: [ currentIndex := 1 ].
-		           self background:
-			           (spriteCollection at: currentIndex).
+		           self background: (spriteCollection at: currentIndex).
+					  self move.
 		           anInteger milliSeconds wait ] ] fork
 ]
 

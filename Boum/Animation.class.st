@@ -3,8 +3,9 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'asteroids',
-		'explosionSprites',
-		'process'
+		'explosions',
+		'process',
+		'space'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -19,17 +20,47 @@ Animation >> addAsteroid: aSprite [
 { #category : 'initialization' }
 Animation >> checkCollisions [
 
+	| toExplode |
+	toExplode := Set new.
 	asteroids withIndexDo: [ :sprite1 :i |
 		i + 1 to: asteroids size do: [ :j |
 			| sprite2 |
 			sprite2 := asteroids at: j.
 			(self detectCollisionBetween: sprite1 and: sprite2) ifTrue: [
-				self triggerExplosionAt: sprite1 position.
-				self triggerExplosionAt: sprite2 position.
-				sprite1 stopAnimation.
-				sprite2 stopAnimation.
-				asteroids remove: sprite1.
-				asteroids remove: sprite2 ] ] ]
+				toExplode add: sprite1.
+				toExplode add: sprite2 ] ].
+		(self isTooFarFromScreen: sprite1) ifTrue: [
+			toExplode add: sprite1.
+		].].
+	toExplode do: [ :e |
+		self triggerExplosionAt: e position.
+		e stopAnimation.
+		asteroids remove: e.
+		space root removeChild: e ].
+	
+]
+
+{ #category : 'initialization' }
+Animation >> checkCollisionsAndBoundaries [
+
+	| toExplode |
+	toExplode := Set new.
+	asteroids withIndexDo: [ :sprite1 :i |
+		i + 1 to: asteroids size do: [ :j |
+			| sprite2 |
+			sprite2 := asteroids at: j.
+			(self detectCollisionBetween: sprite1 and: sprite2) ifTrue: [
+				toExplode add: sprite1.
+				toExplode add: sprite2 ] ].
+		(self isTooFarFromScreen: sprite1) ifTrue: [
+			toExplode add: sprite1.
+		].].
+	toExplode do: [ :e |
+		self triggerExplosionAt: e position.
+		e stopAnimation.
+		asteroids remove: e.
+		space root removeChild: e ].
+	
 ]
 
 { #category : 'initialization' }
@@ -136,17 +167,32 @@ Animation >> detectPixelCollisionBetween: sprite1 and: sprite2 [
 Animation >> initialize [
 
 	super initialize.
+	space := BlSpace new.
+	space root background: Color white.
 	asteroids := OrderedCollection new.
-	explosionSprites := OrderedCollection new
+	explosions := OrderedCollection new
+]
+
+{ #category : 'initialization' }
+Animation >> isTooFarFromScreen: anAsteroid [
+
+	| screenBounds |
+	screenBounds := (0 @ 0 extent: space root boundsInSpace extent) insetBy: 100. "Espace légèrement au-delà de l'écran"
+	^ (anAsteroid boundsInSpace intersects: screenBounds) not
+]
+
+{ #category : 'accessing' }
+Animation >> space [ 
+^space
 ]
 
 { #category : 'initialization' }
 Animation >> start [
 
 	process := [
-	[ true ] whileTrue: [
-		self checkCollisions.
-		50 milliSeconds wait ] ] fork
+	           [ true ] whileTrue: [
+		           self checkCollisionsAndBoundaries.
+		           50 milliSeconds wait ] ] fork
 ]
 
 { #category : 'initialization' }
@@ -162,6 +208,7 @@ Animation >> triggerExplosionAt: aPosition [
 	| explosion |
 	explosion := Explosion new.
 	explosion position: aPosition.
-	explosionSprites add: explosion.
+	explosions add: explosion.
+	space root addChild: explosion.
 	explosion startAnimation
 ]

@@ -25,8 +25,13 @@ Explosion >> initialize [
 			spriteCollection add: (spriteSheet copy: (Rectangle
 						  origin: j - 1 * imageWidth @ (i - 1 * imageHeight)
 						  extent: imageWidth @ imageHeight)) ] ].
-	self extent: 100 @ 100.
+	self extent: 204 @ 204.
 	currentIndex := 1
+]
+
+{ #category : 'removing' }
+Explosion >> removeFromSpace [
+	self parent removeChild: self
 ]
 
 { #category : 'as yet unclassified' }
@@ -34,5 +39,6 @@ Explosion >> startAnimation [
 
 	1 to: 42 do: [ :i |
 		self background: (spriteCollection at: i).
-		30 milliSeconds wait ]
+		30 milliSeconds wait ].
+	self removeFromSpace.
 ]
