@@ -46,7 +46,6 @@ Asteroid >> move [
 	deltaX := speed * direction cos.
 	deltaY := speed * direction sin.
 	oldPosition := self position.
-	self haltIf:[self position = (0@0)].
 	self position: self position + (deltaX @ deltaY).
 	self position: self position + (deltaX @ deltaY).
 ]
