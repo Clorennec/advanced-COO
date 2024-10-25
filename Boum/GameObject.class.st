@@ -19,6 +19,17 @@ GameObject >> blElement [
 ]
 
 { #category : 'initialization' }
+GameObject >> currentPosition [ 
+	^ currentPosition .
+]
+
+{ #category : 'initialization' }
+GameObject >> currentPosition: aPosition [
+	currentPosition := aPosition.
+	blElement position: self currentPosition.
+]
+
+{ #category : 'initialization' }
 GameObject >> initialize [
 	currentFrame := 1.
 	currentPosition := 0 @ 0.
@@ -29,8 +40,7 @@ GameObject >> initialize [
 { #category : 'accessing' }
 GameObject >> move [
 
-	blElement position: currentPosition + velocityVector.
-	currentPosition := currentPosition + velocityVector 
+	self currentPosition: currentPosition + velocityVector.
 ]
 
 { #category : 'updating' }
