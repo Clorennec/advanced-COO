@@ -1,15 +1,29 @@
 Class {
 	#name : 'AsteroidSprite',
 	#superclass : 'Sprite',
+	#classVars : [
+		'uniqueInstance'
+	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
 
-{ #category : 'as yet unclassified' }
-AsteroidSprite class >> loadImages [
+{ #category : 'accessing' }
+AsteroidSprite class >> uniqueInstance [
 
-	| imageWidth imageHeight spriteSheet |
-	images := OrderedCollection new.
+	uniqueInstance ifNil: [ uniqueInstance := self basicNew initialize ].
+	^ uniqueInstance
+]
+
+{ #category : 'as yet unclassified' }
+AsteroidSprite >> initialize [ 
+	super initialize 
+]
+
+{ #category : 'as yet unclassified' }
+AsteroidSprite >> loadImages [
+
+	| spriteSheet imageWidth imageHeight |
 	spriteSheet := Form fromFileNamed:
 		               'C:\Users\louis\Downloads\o001Sp.png'.
 	imageWidth := spriteSheet extent x / 10.
