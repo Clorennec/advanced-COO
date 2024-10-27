@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'gameObjects',
 		'blSpace',
-		'gameLoopProcess'
+		'gameLoopProcess',
+		'player'
 	],
 	#classInstVars : [
 		'instance'
@@ -37,16 +38,17 @@ GameManager >> addAsteroid [
 	| asteroid |
 	asteroid := Asteroid new.
 	blSpace root addChild: asteroid blElement.
-	asteroid currentPosition: 50 @ 50.
+	asteroid currentPosition: 200 @ 50.
 	gameObjects add: asteroid
 ]
 
 { #category : 'adding' }
 GameManager >> addPlayer [
 
-	| player |
 	player := Player newType: 'Type1' color: ''.
 	blSpace root addChild: player blElement.
+	blSpace addEventHandlerOn: BlKeyDownEvent
+		do: [ :event | player adjustVelocityForKey: event key ].
 	player currentPosition: 400 @ 300.
 	gameObjects add: player
 ]
@@ -54,6 +56,37 @@ GameManager >> addPlayer [
 { #category : 'accessing' }
 GameManager >> blSpace [
 	^ blSpace 
+]
+
+{ #category : 'initialization' }
+GameManager >> checkCollisions [
+
+	| toCollide toRemove |
+	toCollide := Set new.
+	toRemove := Set new.
+	gameObjects withIndexDo: [ :obj1 :i |
+		obj1 exploded ifFalse: [
+			(i + 1 to: gameObjects size) do: [ :j |
+				| obj2 |
+				obj2 := gameObjects at: j.
+				obj2 exploded ifFalse: [
+					(obj1 blElement boundsInSpace intersects:
+						 obj2 blElement boundsInSpace) ifTrue: [
+						(obj1 collidesPixelPerfectWith: obj2) ifTrue: [
+						toCollide add: {
+								obj1.
+								obj2 } ] ] ] ] ] ].
+
+	toCollide do: [ :collisionPair |
+		collisionPair first collideWith: collisionPair second ].
+
+	gameObjects do: [ :obj |
+		obj exploded ifTrue: [
+			obj currentFrame >= 42 ifTrue: [ toRemove add: obj ] ] ].
+
+	toRemove do: [ :obj |
+		blSpace root removeChild: obj blElement.
+		gameObjects remove: obj ]
 ]
 
 { #category : 'accessing' }
@@ -85,6 +118,7 @@ GameManager >> startGameLoop [
 	gameLoopProcess := [
 	                   [ blSpace isOpened ] whileTrue: [
 		                   self update.
+								self checkCollisions.
 		                   25 milliSeconds wait ].
 	                   self class reset ] fork
 ]

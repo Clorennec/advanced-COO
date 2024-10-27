@@ -5,6 +5,27 @@ Class {
 	#package : 'Boum'
 }
 
+{ #category : 'as yet unclassified' }
+Asteroid >> collideWith: anObject [
+
+	anObject collideWithAsteroid
+]
+
+{ #category : 'as yet unclassified' }
+Asteroid >> collideWithPlayer [
+
+	sprite := ExplosionSprite uniqueInstance images.
+	exploded := true.
+]
+
+{ #category : 'as yet unclassified' }
+Asteroid >> collideWithPlayer: aPlayer [
+	self explode.
+	aPlayer collideWithAsteroid.
+
+	
+]
+
 { #category : 'initialization' }
 Asteroid >> initialize [
 
