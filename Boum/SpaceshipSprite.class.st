@@ -16,8 +16,8 @@ SpaceshipSprite class >> spaceshipConfigurations [
 	^ {
 		  ('Type1' -> { ('reactorPositions' -> {
 			    (194 @ 379).
-			    (278 @ 379) }) }).
-		  ('Type2' -> { ('reactorPositions' -> { (15 @ 35) }) }) }
+			    (278 @ 379) }) } asDictionary ).
+		  ('Type2' -> { ('reactorPositions' -> { (15 @ 35) }) } asDictionary ) }
 		  asDictionary
 ]
 
@@ -43,7 +43,7 @@ SpaceshipSprite >> configureWith: config color: aColor [
 SpaceshipSprite >> drawFlames [
 
 	1 to: 2 do: [ :i |
-		| flame image|
+		| flame image |
 		flame := FlameSprite uniqueInstance images at: i.
 		image := images at: i.
 		reactorPositions do: [ :pos |
@@ -52,16 +52,16 @@ SpaceshipSprite >> drawFlames [
 					| pixelColor |
 					pixelColor := flame colorAt: x @ y.
 					pixelColor alpha > 0 ifTrue: [
-						(image
-							colorAt: pos + (x @ y) alpha = 0)
-							ifTrue: [ image colorAt: pos + (x @ y) put: pixelColor ] ] ] ] ] ]
+						((image colorAt: (pos + (x @ y))) alpha = 0) ifTrue: [
+							image colorAt: (pos + (x @ y)) put: pixelColor ] ] ] ] ] ]
 ]
 
 { #category : 'as yet unclassified' }
 SpaceshipSprite >> initialize [
-	spaceshipImagePath := 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_NAVY BLUE'.
+
+	spaceshipImagePath := 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_NAVY BLUE.png'.
 	super initialize.
-	self drawFlames.
+	self drawFlames
 ]
 
 { #category : 'as yet unclassified' }
@@ -69,5 +69,5 @@ SpaceshipSprite >> loadImages [
 
 	| spaceshipImage |
 	spaceshipImage := Form fromFileNamed: spaceshipImagePath.
-	1 to: 2 do: [images add: spaceshipImage.]
+	2 timesRepeat: [ images add: spaceshipImage ]
 ]
