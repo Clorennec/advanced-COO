@@ -2,7 +2,6 @@ Class {
 	#name : 'SpaceshipSprite',
 	#superclass : 'Sprite',
 	#instVars : [
-		'color',
 		'reactorPositions',
 		'spaceshipImagePath'
 	],
@@ -14,11 +13,42 @@ Class {
 SpaceshipSprite class >> spaceshipConfigurations [
 
 	^ {
-		  ('Type1' -> { ('reactorPositions' -> {
-			    (194 @ 379).
-			    (278 @ 379) }) } asDictionary ).
-		  ('Type2' -> { ('reactorPositions' -> { (15 @ 35) }) } asDictionary ) }
-		  asDictionary
+		  ('Type1' -> {
+			   ('reactorPositions' -> { (232 @ 369) }).
+			   ('path'
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\01\Spaceship_01_') }
+			   asDictionary).
+		  ('Type2' -> {
+			   ('reactorPositions' -> {
+				    (192 @ 379).
+				    (272 @ 379) }).
+			   ('path'
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_') }
+			   asDictionary).
+		  ('Type3' -> {
+			   ('reactorPositions' -> { (232 @ 362) }).
+			   ('path'
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\03\Spaceship_03_') }
+			   asDictionary).
+		  ('Type4' -> {
+			   ('reactorPositions' -> {
+				    (205 @ 374).
+				    (259 @ 374) }).
+			   ('path'
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\04\Spaceship_04_') }
+			   asDictionary).
+		  ('Type5' -> {
+			   ('reactorPositions' -> { (232 @ 366) }).
+			   ('path'
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\05\Spaceship_05_') }
+			   asDictionary).
+		  ('Type6' -> {
+			   ('reactorPositions' -> {
+				    (102 @ 366).
+				    (362 @ 366) }).
+			   ('path'
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\06\Spaceship_06_') }
+			   asDictionary) } asDictionary
 ]
 
 { #category : 'as yet unclassified' }
@@ -35,8 +65,8 @@ SpaceshipSprite class >> type: aType color: aColor [
 { #category : 'as yet unclassified' }
 SpaceshipSprite >> configureWith: config color: aColor [
 
-	color := aColor.
-	reactorPositions := config at: 'reactorPositions'
+	reactorPositions := config at: 'reactorPositions'.
+	spaceshipImagePath := (config at: 'path'), aColor, '.png'
 ]
 
 { #category : 'as yet unclassified' }
@@ -59,10 +89,9 @@ SpaceshipSprite >> drawFlames [
 { #category : 'as yet unclassified' }
 SpaceshipSprite >> initialize [
 
-	spaceshipImagePath := 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_NAVY BLUE.png'.
 	super initialize.
 	self drawFlames.
-	self scaleSize: 0.5
+	self scaleSize: 1
 ]
 
 { #category : 'as yet unclassified' }
