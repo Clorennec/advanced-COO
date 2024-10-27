@@ -41,6 +41,16 @@ GameManager >> addAsteroid [
 	gameObjects add: asteroid
 ]
 
+{ #category : 'adding' }
+GameManager >> addPlayer [
+
+	| player |
+	player := Player newType: 'Type1' color: ''.
+	blSpace root addChild: player blElement.
+	player currentPosition: 400 @ 300.
+	gameObjects add: player
+]
+
 { #category : 'accessing' }
 GameManager >> blSpace [
 	^ blSpace 
@@ -57,14 +67,16 @@ GameManager >> cleanup [
 
 { #category : 'initialization' }
 GameManager >> initialize [
-    gameObjects := OrderedCollection new.
-    blSpace ifNil: [
-        blSpace := BlSpace new.
-        blSpace addEventHandlerOn: BlSpaceClosedEvent
-            do: [ :event | self cleanup ].
-        blSpace show.
-    ].
-    ^ self
+
+	gameObjects := OrderedCollection new.
+	blSpace ifNil: [
+		blSpace := BlSpace new.
+		blSpace extent: 2400@1350.
+		blSpace
+			addEventHandlerOn: BlSpaceClosedEvent
+			do: [ :event | self cleanup ].
+		blSpace show ].
+	^ self
 ]
 
 { #category : 'as yet unclassified' }

@@ -52,8 +52,8 @@ SpaceshipSprite >> drawFlames [
 					| pixelColor |
 					pixelColor := flame colorAt: x @ y.
 					pixelColor alpha > 0 ifTrue: [
-						((image colorAt: (pos + (x @ y))) alpha = 0) ifTrue: [
-							image colorAt: (pos + (x @ y)) put: pixelColor ] ] ] ] ] ]
+						(image colorAt: pos + (x @ y)) alpha = 0 ifTrue: [
+							image colorAt: pos + (x @ y) put: pixelColor ] ] ] ] ]]
 ]
 
 { #category : 'as yet unclassified' }
@@ -61,7 +61,8 @@ SpaceshipSprite >> initialize [
 
 	spaceshipImagePath := 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_NAVY BLUE.png'.
 	super initialize.
-	self drawFlames
+	self drawFlames.
+	self scaleSize: 0.5
 ]
 
 { #category : 'as yet unclassified' }
@@ -69,5 +70,11 @@ SpaceshipSprite >> loadImages [
 
 	| spaceshipImage |
 	spaceshipImage := Form fromFileNamed: spaceshipImagePath.
-	2 timesRepeat: [ images add: spaceshipImage ]
+	2 timesRepeat: [ images add: spaceshipImage deepCopy ]
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite >> scaleSize: scalingFactor [
+    images := images collect: [ :image |
+        image scaledToSize: (image width * scalingFactor) @ (image height * scalingFactor) ].
 ]
