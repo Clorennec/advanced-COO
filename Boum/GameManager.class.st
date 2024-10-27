@@ -22,9 +22,23 @@ GameManager class >> instance [
 	^ instance
 ]
 
+{ #category : 'as yet unclassified' }
+GameManager class >> instanceWithSpace: aBlSpace [
+    instance ifNil: [
+        instance := self basicNew initializeWithSpace: aBlSpace
+    ].
+    ^ instance
+]
+
 { #category : 'instance creation' }
 GameManager class >> new [
     self error: 'Utilisez GameManager class>>instance pour obtenir l''instance unique.'.
+]
+
+{ #category : 'instance creation' }
+GameManager class >> newWithBlSpace: aBlSpace [
+
+	^ self basicNew initializeWithBlSpace: aBlSpace
 ]
 
 { #category : 'initialization' }
@@ -45,17 +59,34 @@ GameManager >> addAsteroid [
 { #category : 'adding' }
 GameManager >> addPlayer [
 
-	player := Player newType: 'Type1' color: ''.
+	player := Player newType: 'Type1' color: 'GREEN'.
 	blSpace root addChild: player blElement.
-	blSpace addEventHandlerOn: BlKeyDownEvent
+	blSpace
+		addEventHandlerOn: BlKeyDownEvent
 		do: [ :event | player adjustVelocityForKey: event key ].
 	player currentPosition: 400 @ 300.
 	gameObjects add: player
 ]
 
+{ #category : 'adding' }
+GameManager >> addPlayerWithType: aType color: aColor [
+    player := Player newType: aType color: aColor.
+    blSpace root addChild: player blElement.
+    blSpace addEventHandlerOn: BlKeyDownEvent
+        do: [ :event | player adjustVelocityForKey: event key ].
+    player currentPosition: 400 @ 300.
+    gameObjects add: player
+]
+
 { #category : 'accessing' }
 GameManager >> blSpace [
 	^ blSpace 
+]
+
+{ #category : 'accessing' }
+GameManager >> blSpace: aSpace [
+
+	blSpace := aSpace 
 ]
 
 { #category : 'initialization' }
@@ -92,10 +123,9 @@ GameManager >> checkCollisions [
 { #category : 'accessing' }
 GameManager >> cleanup [
 
-    gameLoopProcess ifNotNil: [gameLoopProcess terminate].
-    gameObjects := nil.
-    blSpace close.
-    blSpace := nil.
+	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
+	gameObjects := nil.
+	blSpace := nil
 ]
 
 { #category : 'initialization' }
@@ -110,6 +140,13 @@ GameManager >> initialize [
 			do: [ :event | self cleanup ].
 		blSpace show ].
 	^ self
+]
+
+{ #category : 'instance creation' }
+GameManager >> initializeWithSpace: aBlSpace [
+    gameObjects := OrderedCollection new.
+    blSpace := aBlSpace.
+    ^ self
 ]
 
 { #category : 'as yet unclassified' }
