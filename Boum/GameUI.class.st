@@ -97,35 +97,5 @@ GameUI >> initializeWithGameManager: aGameManager [
 
 { #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
-
-	| menu glowEffect label colorSelector |
-	menu := BlElement new.
-	menu geometry: (BlRoundedRectangleGeometry cornerRadius: 50).
-	menu extent: 1200 @ 1200.
-	menu border: (BlBorder builder
-			 paint: Color pink;
-			 width: 5;
-			 build).
-	menu background: ((BlLinearGradientPaint direction: 1 @ 1)
-			 from: Color darkGray
-			 to: Color lightBlue).
-	glowEffect := BlGaussianShadowEffect
-		              color: Color pink
-		              offset: 0 @ 0
-		              width: 50.
-	glowEffect extraShadowSpace.
-	menu effect: glowEffect.
-	menu position: 600 @ 75.
-	label := BlTextElement new.
-	label text: ('Jeu 12' asRopedText attributes: { (BlTextForegroundAttribute paint: Color white) }).
-	label text fontSize: 112.
-	menu addChild: label.
-	label transformDo: [ :t | 
-		t translateBy: 0@ 50 ].
-	app blSpace root addChild: menu.
-	colorSelector := self createColorSelector.
-	menu addChild: colorSelector. 
-	colorSelector transformDo: [ :t |
-		t translateBy: 800@0 ]
-	
+	Menu showOn: app blSpace.
 ]
