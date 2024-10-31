@@ -6,7 +6,11 @@ Class {
 		'blElement',
 		'menu',
 		'title',
-		'spaceshipSelector'
+		'spaceshipSelector',
+		'spaceShipPreview',
+		'currentSpaceship',
+		'currentColor',
+		'spaceshipColors'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -14,12 +18,13 @@ Class {
 
 { #category : 'drawing' }
 Menu class >> showOn: aBlSpace [
+
 	| menu |
-        menu := self new.
-		  menu blSpace: aBlSpace.
-        menu setupElements.
-        menu showOn: aBlSpace.
-        ^ menu
+	menu := self new.
+	menu blSpace: aBlSpace.
+	menu setupElements.
+	menu showOn: aBlSpace.
+	^ menu
 ]
 
 { #category : 'accessing' }
@@ -38,6 +43,45 @@ Menu >> createCircle [
 		          geometry: BlCircleGeometry new.
 	circle constraintsDo: [  :c | c frame vertical alignCenter ].
 	^ circle
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> getSpaceshipImage [
+
+	| imagePath image |
+	imagePath := ((SpaceshipSprite spaceshipConfigurations at:
+		              ('Type' , currentSpaceship asString)) at: 'path')
+	             , currentColor , '.png'.
+	image := Form fromFileNamed: imagePath.
+	^ image
+]
+
+{ #category : 'initialization' }
+Menu >> initialize [
+
+	currentSpaceship := 1.
+	spaceshipColors := { 'RED'. 'GREEN' . 'NAVY BLUE' . 'ORANGE' . 'PURPLE' . 'YELLOW' }.
+	currentColor := 'GREEN'
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> nextSpaceship [
+
+	currentSpaceship < 6
+		ifTrue: [ currentSpaceship := currentSpaceship + 1 ]
+		ifFalse: [ currentSpaceship := 1 ].
+	spaceShipPreview background:
+		(self getSpaceshipImage)
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> previousSpaceship [
+
+	currentSpaceship > 1
+		ifTrue: [ currentSpaceship := currentSpaceship - 1 ]
+		ifFalse: [ currentSpaceship := 6 ].
+	spaceShipPreview background:
+		(self getSpaceshipImage)
 ]
 
 { #category : 'as yet unclassified' }
@@ -91,9 +135,57 @@ Menu >> setupMenu [
 
 { #category : 'as yet unclassified' }
 Menu >> setupSpaceshipSelector [
-	spaceshipSelector := BlElement new extent: 800@400; layout: BlFrameLayout new.
-	spaceshipSelector background: Color black.
-	
+
+	| leftButton leftArrow rightButton rightArrow spaceshipImage |
+	spaceshipSelector := BlElement new
+		                     extent: 800 @ 500;
+		                     layout: BlFrameLayout new.
+	spaceshipSelector constraintsDo: [ :c |
+		c frame horizontal alignCenter ].
+	spaceshipSelector transformDo: [ :t | t translateBy: 0 @ 300 ].
+
+
+	leftButton := self createCircle.
+	leftButton constraintsDo: [ :c |
+		c frame horizontal alignLeft.
+		c frame vertical alignCenter ].
+
+	leftArrow := BlTextElement new text: ('<' asRopedText attributes:
+			              { (BlTextForegroundAttribute paint: Color pink) }).
+	leftArrow text fontSize: 55.
+	leftArrow constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+	leftButton
+		addEventHandlerOn: BlMouseDownEvent
+		do: [ :e | self previousSpaceship ].
+	leftButton addChild: leftArrow.
+
+	rightButton := self createCircle.
+	rightButton constraintsDo: [ :c |
+		c frame horizontal alignRight.
+		c frame vertical alignCenter ].
+
+	rightArrow := BlTextElement new text: ('>' asRopedText attributes:
+			               { (BlTextForegroundAttribute paint: Color pink) }).
+	rightArrow text fontSize: 55.
+	rightArrow constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+	rightButton
+		addEventHandlerOn: BlMouseDownEvent
+		do: [ :e | self nextSpaceship ].
+	rightButton addChild: rightArrow.
+
+	spaceShipPreview := BlElement new extent: 500 @ 500.
+	spaceshipImage := self getSpaceshipImage.
+	spaceShipPreview background: spaceshipImage.
+
+	spaceshipSelector addChild: leftButton.
+	spaceshipSelector addChild: rightButton.
+	spaceshipSelector addChild: spaceShipPreview.
+
+	menu addChild: spaceshipSelector
 ]
 
 { #category : 'as yet unclassified' }
@@ -106,4 +198,10 @@ Menu >> setupTitle [
 	title constraintsDo: [ :c | c frame horizontal alignCenter ].
 	title transformDo: [ :t | t translateBy: 0 @ 50 ].
 	menu addChild: title
+]
+
+{ #category : 'drawing' }
+Menu >> showOn: aBlSpace [
+
+	blSpace root addChild: blElement
 ]
