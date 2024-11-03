@@ -7,10 +7,14 @@ Class {
 		'menu',
 		'title',
 		'spaceshipSelector',
-		'spaceShipPreview',
+		'spaceshipPreview',
 		'currentSpaceship',
 		'currentColor',
-		'spaceshipColors'
+		'spaceshipColors',
+		'colorSelector',
+		'colorPreview',
+		'currentColorIndex',
+		'playButton'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -50,8 +54,8 @@ Menu >> getSpaceshipImage [
 
 	| imagePath image |
 	imagePath := ((SpaceshipSprite spaceshipConfigurations at:
-		              ('Type' , currentSpaceship asString)) at: 'path')
-	             , currentColor , '.png'.
+		               'Type' , currentSpaceship asString) at: 'path')
+	             , (spaceshipColors at: currentColorIndex) , '.png'.
 	image := Form fromFileNamed: imagePath.
 	^ image
 ]
@@ -60,34 +64,95 @@ Menu >> getSpaceshipImage [
 Menu >> initialize [
 
 	currentSpaceship := 1.
-	spaceshipColors := { 'RED'. 'GREEN' . 'NAVY BLUE' . 'ORANGE' . 'PURPLE' . 'YELLOW' }.
-	currentColor := 'GREEN'
+	currentColorIndex := 1.
+	spaceshipColors := { 'RED'. 'GREEN'. 'NAVY BLUE'. 'ORANGE'. 'PURPLE'.
+	                   'YELLOW' }.
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> nextColor [
+
+	currentColorIndex := currentColorIndex \\ 6 + 1.
+	spaceshipPreview background: self getSpaceshipImage.
+	colorPreview text: ((spaceshipColors at: currentColorIndex) asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
 ]
 
 { #category : 'as yet unclassified' }
 Menu >> nextSpaceship [
+    currentSpaceship := (currentSpaceship \\ 6) + 1.
+    spaceshipPreview background: self getSpaceshipImage
 
-	currentSpaceship < 6
-		ifTrue: [ currentSpaceship := currentSpaceship + 1 ]
-		ifFalse: [ currentSpaceship := 1 ].
-	spaceShipPreview background:
-		(self getSpaceshipImage)
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> previousColor [
+
+	currentColorIndex := currentColorIndex - 2 \\ 6 + 1.
+	spaceshipPreview background: self getSpaceshipImage.
+	colorPreview text: ((spaceshipColors at: currentColorIndex) asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
 ]
 
 { #category : 'as yet unclassified' }
 Menu >> previousSpaceship [
 
-	currentSpaceship > 1
-		ifTrue: [ currentSpaceship := currentSpaceship - 1 ]
-		ifFalse: [ currentSpaceship := 6 ].
-	spaceShipPreview background:
-		(self getSpaceshipImage)
+	currentSpaceship := currentSpaceship - 2 \\ 6 + 1.
+	spaceshipPreview background: self getSpaceshipImage
 ]
 
 { #category : 'as yet unclassified' }
 Menu >> setupColorSelector [
 
-	
+	| leftButton leftArrow rightButton rightArrow |
+	colorSelector := BlElement new
+		                 extent: 800 @ 300;
+		                 layout: BlFrameLayout new.
+	colorSelector constraintsDo: [ :c | c frame horizontal alignCenter ].
+	colorSelector transformDo: [ :t | t translateBy: 0 @ 800 ].
+
+
+	leftButton := self createCircle.
+	leftButton constraintsDo: [ :c |
+		c frame horizontal alignLeft.
+		c frame vertical alignCenter ].
+
+	leftArrow := BlTextElement new text: ('<' asRopedText attributes:
+			              { (BlTextForegroundAttribute paint: Color pink) }).
+	leftArrow text fontSize: 55.
+	leftArrow constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+	leftButton
+		addEventHandlerOn: BlMouseDownEvent
+		do: [ :e | self previousColor ].
+	leftButton addChild: leftArrow.
+
+	rightButton := self createCircle.
+	rightButton constraintsDo: [ :c |
+		c frame horizontal alignRight.
+		c frame vertical alignCenter ].
+
+	rightArrow := BlTextElement new text: ('>' asRopedText attributes:
+			               { (BlTextForegroundAttribute paint: Color pink) }).
+	rightArrow text fontSize: 55.
+	rightArrow constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+	rightButton
+		addEventHandlerOn: BlMouseDownEvent
+		do: [ :e | self nextColor ].
+	rightButton addChild: rightArrow.
+
+	colorPreview := BlTextElement new.
+	colorPreview constraintsDo: [ :c | c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+
+	colorSelector addChild: leftButton.
+	colorSelector addChild: rightButton.
+	colorSelector addChild: colorPreview.
+
+	menu addChild: colorSelector 
 ]
 
 { #category : 'as yet unclassified' }
@@ -101,7 +166,8 @@ Menu >> setupElements [
 
 	self setupTitle.
 	self setupSpaceshipSelector.
-	self setupColorSelector
+	self setupColorSelector.
+	self setupPlayButton.
 ]
 
 { #category : 'initialization' }
@@ -131,6 +197,27 @@ Menu >> setupMenu [
 	menu effect: glowEffect.
 
 	blElement addChild: menu
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> setupPlayButton [
+	| buttonText |
+	
+	playButton := BlElement new.
+	playButton geometry: (BlRoundedRectangleGeometry cornerRadius: 25).
+	playButton constraintsDo: [ :c | c frame horizontal alignCenter ].
+	playButton background: Color pink.
+	playButton layout: BlFrameLayout.
+	playButton addEventHandlerOn: BlMouseDownEvent do: self startGame.
+	
+	buttonText := BlTextElement new.
+	buttonText text: ('PLAY' asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
+	buttonText text fontSize: 88.
+	buttonText constraintsDo: [ :c | c frame horizontal alignCenter.
+		c frame vertical alignCenter ]
+	
+	
 ]
 
 { #category : 'as yet unclassified' }
@@ -177,13 +264,15 @@ Menu >> setupSpaceshipSelector [
 		do: [ :e | self nextSpaceship ].
 	rightButton addChild: rightArrow.
 
-	spaceShipPreview := BlElement new extent: 500 @ 500.
+	spaceshipPreview := BlElement new extent: 500 @ 500.
 	spaceshipImage := self getSpaceshipImage.
-	spaceShipPreview background: spaceshipImage.
+	spaceshipPreview background: spaceshipImage.
+	spaceshipPreview constraintsDo: [ :c |
+		c frame horizontal alignCenter ].
 
 	spaceshipSelector addChild: leftButton.
 	spaceshipSelector addChild: rightButton.
-	spaceshipSelector addChild: spaceShipPreview.
+	spaceshipSelector addChild: spaceshipPreview.
 
 	menu addChild: spaceshipSelector
 ]
