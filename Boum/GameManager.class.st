@@ -16,11 +16,13 @@ Class {
 
 { #category : 'as yet unclassified' }
 GameManager class >> instanceWithSpace: aBlSpace [
-    instance ifNil: [
-        instance := self basicNew initializeWithSpace: aBlSpace
+    (instance notNil and: [ instance blSpace notNil ]) ifTrue: [
+        ^ instance
     ].
+    instance := self basicNew initializeWithSpace: aBlSpace.
     ^ instance
 ]
+
 
 { #category : 'instance creation' }
 GameManager class >> new [
@@ -66,7 +68,8 @@ GameManager >> addPlayerWithType: aType color: aColor [
 
 { #category : 'accessing' }
 GameManager >> blSpace [
-	^ blSpace 
+	blSpace ifNil: [ self error: 'blSpace is not initialized.' ].
+	^ blSpace
 ]
 
 { #category : 'accessing' }
