@@ -9,7 +9,6 @@ Class {
 		'spaceshipSelector',
 		'spaceshipPreview',
 		'currentSpaceship',
-		'currentColor',
 		'spaceshipColors',
 		'colorSelector',
 		'colorPreview',
@@ -109,7 +108,7 @@ Menu >> setupColorSelector [
 		                 extent: 800 @ 300;
 		                 layout: BlFrameLayout new.
 	colorSelector constraintsDo: [ :c | c frame horizontal alignCenter ].
-	colorSelector transformDo: [ :t | t translateBy: 0 @ 800 ].
+	colorSelector transformDo: [ :t | t translateBy: 0 @ 650 ].
 
 
 	leftButton := self createCircle.
@@ -145,14 +144,18 @@ Menu >> setupColorSelector [
 	rightButton addChild: rightArrow.
 
 	colorPreview := BlTextElement new.
-	colorPreview constraintsDo: [ :c | c frame horizontal alignCenter.
+	colorPreview text:
+		((spaceshipColors at: currentColorIndex) asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
+	colorPreview constraintsDo: [ :c |
+		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 
 	colorSelector addChild: leftButton.
 	colorSelector addChild: rightButton.
 	colorSelector addChild: colorPreview.
 
-	menu addChild: colorSelector 
+	menu addChild: colorSelector
 ]
 
 { #category : 'as yet unclassified' }
@@ -201,23 +204,27 @@ Menu >> setupMenu [
 
 { #category : 'as yet unclassified' }
 Menu >> setupPlayButton [
+
 	| buttonText |
-	
-	playButton := BlElement new.
+	playButton := BlElement new extent: 200 @ 150.
 	playButton geometry: (BlRoundedRectangleGeometry cornerRadius: 25).
 	playButton constraintsDo: [ :c | c frame horizontal alignCenter ].
 	playButton background: Color pink.
-	playButton layout: BlFrameLayout.
+	playButton layout: BlFrameLayout new.
 	playButton addEventHandlerOn: BlMouseDownEvent do: self startGame.
-	
+	playButton transformDo: [ :t | t translateBy: 0 @ 950 ].
+
 	buttonText := BlTextElement new.
 	buttonText text: ('PLAY' asRopedText attributes:
-			 { (BlTextForegroundAttribute paint: Color white) }).
+			 { (BlTextForegroundAttribute paint: Color black) }).
 	buttonText text fontSize: 88.
-	buttonText constraintsDo: [ :c | c frame horizontal alignCenter.
-		c frame vertical alignCenter ]
-	
-	
+	buttonText constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+
+	playButton addChild: buttonText.
+
+	menu addChild: playButton
 ]
 
 { #category : 'as yet unclassified' }
@@ -229,7 +236,7 @@ Menu >> setupSpaceshipSelector [
 		                     layout: BlFrameLayout new.
 	spaceshipSelector constraintsDo: [ :c |
 		c frame horizontal alignCenter ].
-	spaceshipSelector transformDo: [ :t | t translateBy: 0 @ 300 ].
+	spaceshipSelector transformDo: [ :t | t translateBy: 0 @ 150 ].
 
 
 	leftButton := self createCircle.
@@ -293,4 +300,12 @@ Menu >> setupTitle [
 Menu >> showOn: aBlSpace [
 
 	blSpace root addChild: blElement
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> startGame [
+	blElement removeFromParent.
+	GameApp instance
+		startGameWithShipType: 'Type' , currentSpaceship asString
+		color: (spaceshipColors at: currentColorIndex)
 ]

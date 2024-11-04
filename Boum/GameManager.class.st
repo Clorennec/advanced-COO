@@ -14,14 +14,6 @@ Class {
 	#package : 'Boum'
 }
 
-{ #category : 'accessing' }
-GameManager class >> instance [
-
-	instance ifNil: [ instance := self basicNew initialize ].
-	instance blSpace ifNil: [ instance initialize ]. 
-	^ instance
-]
-
 { #category : 'as yet unclassified' }
 GameManager class >> instanceWithSpace: aBlSpace [
     instance ifNil: [
@@ -33,12 +25,6 @@ GameManager class >> instanceWithSpace: aBlSpace [
 { #category : 'instance creation' }
 GameManager class >> new [
     self error: 'Utilisez GameManager class>>instance pour obtenir l''instance unique.'.
-]
-
-{ #category : 'instance creation' }
-GameManager class >> newWithBlSpace: aBlSpace [
-
-	^ self basicNew initializeWithBlSpace: aBlSpace
 ]
 
 { #category : 'initialization' }
@@ -126,20 +112,6 @@ GameManager >> cleanup [
 	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
 	gameObjects := nil.
 	blSpace := nil
-]
-
-{ #category : 'initialization' }
-GameManager >> initialize [
-
-	gameObjects := OrderedCollection new.
-	blSpace ifNil: [
-		blSpace := BlSpace new.
-		blSpace extent: 2400@1350.
-		blSpace
-			addEventHandlerOn: BlSpaceClosedEvent
-			do: [ :event | self cleanup ].
-		blSpace show ].
-	^ self
 ]
 
 { #category : 'instance creation' }
