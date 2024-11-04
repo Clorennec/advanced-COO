@@ -16,13 +16,14 @@ Class {
 
 { #category : 'as yet unclassified' }
 GameManager class >> instanceWithSpace: aBlSpace [
-    (instance notNil and: [ instance blSpace notNil ]) ifTrue: [
-        ^ instance
+    instance ifNil: [ 
+        instance := self basicNew.
+        instance initializeWithSpace: aBlSpace
+    ] ifNotNil: [
+        instance blSpace: aBlSpace
     ].
-    instance := self basicNew initializeWithSpace: aBlSpace.
     ^ instance
 ]
-
 
 { #category : 'instance creation' }
 GameManager class >> new [
@@ -58,6 +59,10 @@ GameManager >> addPlayer [
 
 { #category : 'adding' }
 GameManager >> addPlayerWithType: aType color: aColor [
+    Transcript show: 'blSpace: '; show: blSpace printString; cr.
+    blSpace ifNil: [ self error: 'BlSpace not initialized' ].
+    blSpace root ifNil: [ self error: 'BlSpace root not initialized' ].
+    
     player := Player newType: aType color: aColor.
     blSpace root addChild: player blElement.
     blSpace addEventHandlerOn: BlKeyDownEvent
@@ -111,14 +116,24 @@ GameManager >> checkCollisions [
 
 { #category : 'accessing' }
 GameManager >> cleanup [
+    gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
+    gameObjects := OrderedCollection new.
+    "Ne pas mettre blSpace à nil, juste nettoyer ses enfants si nécessaire"
+    blSpace ifNotNil: [ 
+        blSpace root ifNotNil: [ blSpace root removeChildren ]
+    ]
+]
 
-	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
-	gameObjects := nil.
-	blSpace := nil
+{ #category : 'initialization' }
+GameManager >> initialize [
+    super initialize.
+    gameObjects := OrderedCollection new.
+    ^ self
 ]
 
 { #category : 'instance creation' }
 GameManager >> initializeWithSpace: aBlSpace [
+    self initialize. 
     gameObjects := OrderedCollection new.
     blSpace := aBlSpace.
     ^ self

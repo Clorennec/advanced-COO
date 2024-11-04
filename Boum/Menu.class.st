@@ -211,7 +211,7 @@ Menu >> setupPlayButton [
 	playButton constraintsDo: [ :c | c frame horizontal alignCenter ].
 	playButton background: Color pink.
 	playButton layout: BlFrameLayout new.
-	playButton addEventHandlerOn: BlMouseDownEvent do: self startGame.
+	playButton addEventHandlerOn: BlMouseDownEvent do: [ :e | self startGame].
 	playButton transformDo: [ :t | t translateBy: 0 @ 950 ].
 
 	buttonText := BlTextElement new.

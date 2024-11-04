@@ -26,23 +26,25 @@ GameApp >> blSpace [
 
 { #category : 'initialization' }
 GameApp >> cleanup [
-
-	gameManager cleanup.
-	blSpace root removeChildren.
-	blSpace close
+    gameManager ifNotNil: [ gameManager cleanup ].
+    blSpace ifNotNil: [
+        blSpace root ifNotNil: [ blSpace root removeChildren ].
+        blSpace close
+    ]
 ]
 
 { #category : 'initialization' }
-GameApp >> initialize [
+GameApp >> initialize [ 
+    super initialize.
+    blSpace := BlSpace new.
+    blSpace extent: 2400 @ 1350.
+    blSpace addEventHandlerOn: BlSpaceClosedEvent
+        do: [ :event | self cleanup ].
 
-	blSpace := BlSpace new.
-	blSpace extent: 2400 @ 1350.
-	blSpace
-		addEventHandlerOn: BlSpaceClosedEvent
-		do: [ :event | self cleanup ].
-	gameManager := GameManager instanceWithSpace: blSpace.
-	gameUI := GameUI newWithApp: self.
-	^ self
+    gameManager := GameManager reset; 
+                  instanceWithSpace: blSpace.
+    gameUI := GameUI newWithApp: self.
+    ^ self
 ]
 
 { #category : 'initialization' }
@@ -54,6 +56,7 @@ GameApp >> start [
 { #category : 'initialization' }
 GameApp >> startGameWithShipType: aType color: aColor [
 
-	gameManager addPlayerWithType: aType color: aColor.
-	gameManager startGameLoop
+    gameManager blSpace: blSpace.
+    gameManager addPlayerWithType: aType color: aColor.
+    gameManager startGameLoop
 ]
