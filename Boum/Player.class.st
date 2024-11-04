@@ -43,14 +43,14 @@ Player >> collideWithAsteroid: anAsteroid [
 { #category : 'as yet unclassified' }
 Player >> increaseVelocityInDirection: aDirection [
 
-	| speedIncrement |
+	| speedIncrement newVelocity |
 	speedIncrement := 0.1.
 
-	"Limiter la vitesse maximale"
-	((velocityVector + (aDirection * speedIncrement)) x <= 5
-		and: (velocityVector + (aDirection * speedIncrement)) y <= 5)
-		ifTrue: [
-		velocityVector := velocityVector + (aDirection * speedIncrement) ]
+    newVelocity := velocityVector + (aDirection * speedIncrement).
+    
+    (newVelocity x abs <= 5
+        and: [newVelocity y abs <= 5])
+        ifTrue: [ velocityVector := newVelocity ]
 ]
 
 { #category : 'initialization' }
