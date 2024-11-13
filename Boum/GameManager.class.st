@@ -6,7 +6,8 @@ Class {
 		'blSpace',
 		'gameLoopProcess',
 		'player',
-		'asteroidGenerationProcess'
+		'asteroidGenerationProcess',
+		'collisionCheckProcess'
 	],
 	#classInstVars : [
 		'instance'
@@ -102,26 +103,24 @@ GameManager >> blSpace: aSpace [
 { #category : 'initialization' }
 GameManager >> checkCollisions [
 
-	| toCollide toRemove |
+	| toCollide toRemove notExploded |
 	toCollide := Set new.
 	toRemove := Set new.
-	gameObjects withIndexDo: [ :obj1 :i |
-		obj1 exploded ifFalse: [
-			(i + 1 to: gameObjects size) do: [ :j |
-				| obj2 |
-				obj2 := gameObjects at: j.
-				obj2 exploded ifFalse: [
-					(obj1 blElement boundsInSpace intersects:
-						 obj2 blElement boundsInSpace) ifTrue: [
-						(obj1 collidesPixelPerfectWith: obj2) ifTrue: [
-						toCollide add: {
-								obj1.
-								obj2 } ] ] ] ] ] ].
+
+	notExploded := gameObjects select: [ :obj |
+		               obj ~~ player and: [ obj exploded not ] ].
+
+	notExploded do: [ :obj |
+		(player blElement boundsInSpace intersects:
+			 obj blElement boundsInSpace) ifTrue: [ (player collidesPixelPerfectWith: obj) ifTrue: [
+				toCollide add: {
+						player.
+						obj } ] ] ].
 
 	toCollide do: [ :collisionPair |
 		collisionPair first collideWith: collisionPair second ].
 
-	gameObjects do: [ :obj |
+	notExploded do: [ :obj |
 		obj exploded ifTrue: [
 			obj currentFrame >= 42 ifTrue: [ toRemove add: obj ] ] ].
 
@@ -159,13 +158,13 @@ GameManager >> initializeWithSpace: aBlSpace [
 
 { #category : 'as yet unclassified' }
 GameManager >> removeFarAsteroids [
-	|toRemove|
-	
-	toRemove := gameObjects select: [ :o | o currentPosition x > 1400 ].
-    
-    toRemove do: [ :o |
-        o blElement removeFromParent.
-        gameObjects remove: o ].
+
+	| toRemove |
+	toRemove := gameObjects select: [ :o | o currentPosition y > 1400 ].
+
+	toRemove do: [ :o |
+		o blElement removeFromParent.
+		gameObjects remove: o ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -174,18 +173,28 @@ GameManager >> startAsteroidGeneration [
 	asteroidGenerationProcess := [
 	                             [ blSpace isOpened ] whileTrue: [
 		                             self addRandomAsteroid.
-											 self removeFarAsteroids.
 		                             400 milliSeconds wait ].
 	                             self class reset ] fork
 ]
 
 { #category : 'as yet unclassified' }
+GameManager >> startCollisionCheck [
+
+	collisionCheckProcess := [
+	                         [ blSpace isOpened ] whileTrue: [
+		                         self checkCollisions.
+		                         self removeFarAsteroids.
+		                         50 milliSeconds wait ] ] fork
+]
+
+{ #category : 'as yet unclassified' }
 GameManager >> startGameLoop [
+
 	self startAsteroidGeneration.
+	self startCollisionCheck.
 	gameLoopProcess := [
 	                   [ blSpace isOpened ] whileTrue: [
 		                   self update.
-		                   self checkCollisions.
 		                   25 milliSeconds wait ].
 	                   self class reset ] fork
 ]
@@ -193,6 +202,14 @@ GameManager >> startGameLoop [
 { #category : 'initialization' }
 GameManager >> update [
 
-	gameObjects do: [ :object |
-		object update.]
+	| toRemove |
+	toRemove := Set new.
+	gameObjects do: [ :object | object update ].
+	gameObjects do: [ :obj |
+		obj exploded ifTrue: [
+			obj currentFrame >= 42 ifTrue: [ toRemove add: obj ] ] ].
+
+	toRemove do: [ :obj |
+		blSpace root removeChild: obj blElement.
+		gameObjects remove: obj ]
 ]

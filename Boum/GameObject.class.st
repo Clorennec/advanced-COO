@@ -35,8 +35,8 @@ GameObject >> collidesPixelPerfectWith: anotherObject [
 
 	overlapArea isZero ifTrue: [ ^ false ].
 
-	overlapArea origin x to: overlapArea corner x do: [ :overlapX |
-		overlapArea origin y to: overlapArea corner y do: [ :overlapY |
+	overlapArea origin x to: overlapArea corner x by: 2 do: [ :overlapX |
+		overlapArea origin y to: overlapArea corner y by: 2 do: [ :overlapY |
 			x := overlapX - self currentPosition x.
 			y := overlapY - self currentPosition y.
 			colorA := (sprite at: currentFrame) colorAt: x @ y.
@@ -47,7 +47,7 @@ GameObject >> collidesPixelPerfectWith: anotherObject [
 				          colorAt: x @ y.
 
 			(colorA alpha > 0 and: [ colorB alpha > 0 ]) ifTrue: [ ^ true ] ] ].
-	^false
+	^ false
 ]
 
 { #category : 'accessing' }
@@ -73,6 +73,7 @@ GameObject >> explode [
 	pos := currentPosition.
 	sprite := ExplosionSprite uniqueInstance images.
 	currentFrame := 1.
+	blElement background: (sprite at: 1).
 	exploded := true.
 	self currentPosition:
 		pos - ((sprite at: currentFrame) extent - blElement extent / 2).

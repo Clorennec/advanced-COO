@@ -1,6 +1,9 @@
 Class {
 	#name : 'Player',
 	#superclass : 'GameObject',
+	#instVars : [
+		'pressedKeys'
+	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
@@ -11,13 +14,28 @@ Player class >> newType: aType color: aColor [
 ]
 
 { #category : 'as yet unclassified' }
-Player >> adjustVelocityForKey: aKey [
+Player >> adjustVelocity [
 
-	aKey name caseOf: {
-			([ #UP ] -> [ self increaseVelocityInDirection: 0 @ -1 ]).
-			([ #DOWN ] -> [ self increaseVelocityInDirection: 0 @ 1 ]).
-			([ #LEFT ] -> [ self increaseVelocityInDirection: -1 @ 0 ]).
-			([ #RIGHT ] -> [ self increaseVelocityInDirection: 1 @ 0 ]) }
+	| newVelocity speedIncrement |
+	speedIncrement := 0.1.
+
+	newVelocity := velocityVector.
+
+	pressedKeys do: [ :key |
+		key
+			caseOf: {
+					([ #up ]
+					 -> [ newVelocity := newVelocity + (0 @ (0 - speedIncrement)) ]).
+					([ #down ]
+					 -> [ newVelocity := newVelocity + (0 @ speedIncrement) ]).
+					([ #left ]
+					 -> [ newVelocity := newVelocity + (0 - speedIncrement @ 0) ]).
+					([ #right ]
+					 -> [ newVelocity := newVelocity + (speedIncrement @ 0) ]) }
+			otherwise: [  ] ].
+
+	(newVelocity x abs <= 5 and: [ newVelocity y abs <= 5 ]) ifTrue: [
+		velocityVector := newVelocity ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -40,30 +58,31 @@ Player >> collideWithAsteroid: anAsteroid [
 	
 ]
 
-{ #category : 'as yet unclassified' }
-Player >> increaseVelocityInDirection: aDirection [
-
-	| speedIncrement newVelocity |
-	speedIncrement := 0.1.
-
-    newVelocity := velocityVector + (aDirection * speedIncrement).
-    
-    (newVelocity x abs <= 5
-        and: [newVelocity y abs <= 5])
-        ifTrue: [ velocityVector := newVelocity ]
-]
-
 { #category : 'initialization' }
 Player >> initializeWithType: aType color: aColor [
 
 	super initialize.
+	pressedKeys := Set new.
 	sprite := (SpaceshipSprite type: aType color: aColor) images.
 	blElement background: (sprite at: currentFrame).
 	blElement extent: (sprite at: currentFrame) extent.
 	blElement
-		addEventHandlerOn: BlKeyDownEvent
-		do: [ :event | self adjustVelocityForKey: event key ].
+            addEventHandlerOn: BlKeyDownEvent
+            do: [ :event | self keyDown: event key ].
+        blElement
+            addEventHandlerOn: BlKeyUpEvent
+            do: [ :event | self keyUp: event key ].
 	^ self
+]
+
+{ #category : 'initialization' }
+Player >> keyDown: aKey [
+        pressedKeys add: aKey name.
+]
+
+{ #category : 'as yet unclassified' }
+Player >> keyUp: aKey [
+        pressedKeys remove: aKey name.
 ]
 
 { #category : 'as yet unclassified' }
@@ -71,4 +90,10 @@ Player >> takeDamage [
 	
 
 	
+]
+
+{ #category : 'updating' }
+Player >> update [ 
+	super update.
+	self adjustVelocity.
 ]
