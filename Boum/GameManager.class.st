@@ -5,7 +5,8 @@ Class {
 		'gameObjects',
 		'blSpace',
 		'gameLoopProcess',
-		'player'
+		'player',
+		'asteroidGenerationProcess'
 	],
 	#classInstVars : [
 		'instance'
@@ -71,6 +72,21 @@ GameManager >> addPlayerWithType: aType color: aColor [
     gameObjects add: player
 ]
 
+{ #category : 'as yet unclassified' }
+GameManager >> addRandomAsteroid [
+
+	| randPos randVect asteroid |
+	randPos := (1 to: 3000) atRandom @ 0 - 300.
+	randVect := Random new next * 3 - 1.5 @ (Random new next * 5 + 3).
+
+	asteroid := Asteroid new.
+	asteroid currentPosition: randPos.
+	asteroid velocity: randVect.
+
+	blSpace root addChild: asteroid blElement.
+	gameObjects add: asteroid
+]
+
 { #category : 'accessing' }
 GameManager >> blSpace [
 	blSpace ifNil: [ self error: 'blSpace is not initialized.' ].
@@ -116,12 +132,14 @@ GameManager >> checkCollisions [
 
 { #category : 'accessing' }
 GameManager >> cleanup [
-    gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
-    gameObjects := OrderedCollection new.
-    "Ne pas mettre blSpace à nil, juste nettoyer ses enfants si nécessaire"
-    blSpace ifNotNil: [ 
-        blSpace root ifNotNil: [ blSpace root removeChildren ]
-    ]
+
+	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
+	asteroidGenerationProcess ifNotNil: [ asteroidGenerationProcess terminate ].
+	
+	gameObjects := OrderedCollection new.
+
+	blSpace ifNotNil: [
+		blSpace root ifNotNil: [ blSpace root removeChildren ] ]
 ]
 
 { #category : 'initialization' }
@@ -140,12 +158,34 @@ GameManager >> initializeWithSpace: aBlSpace [
 ]
 
 { #category : 'as yet unclassified' }
-GameManager >> startGameLoop [
+GameManager >> removeFarAsteroids [
+	|toRemove|
+	
+	toRemove := gameObjects select: [ :o | o currentPosition x > 1400 ].
+    
+    toRemove do: [ :o |
+        o blElement removeFromParent.
+        gameObjects remove: o ].
+]
 
+{ #category : 'as yet unclassified' }
+GameManager >> startAsteroidGeneration [
+
+	asteroidGenerationProcess := [
+	                             [ blSpace isOpened ] whileTrue: [
+		                             self addRandomAsteroid.
+											 self removeFarAsteroids.
+		                             400 milliSeconds wait ].
+	                             self class reset ] fork
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> startGameLoop [
+	self startAsteroidGeneration.
 	gameLoopProcess := [
 	                   [ blSpace isOpened ] whileTrue: [
 		                   self update.
-								self checkCollisions.
+		                   self checkCollisions.
 		                   25 milliSeconds wait ].
 	                   self class reset ] fork
 ]

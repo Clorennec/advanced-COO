@@ -12,6 +12,11 @@ Asteroid >> collideWith: anObject [
 ]
 
 { #category : 'as yet unclassified' }
+Asteroid >> collideWithAsteroid [
+
+]
+
+{ #category : 'as yet unclassified' }
 Asteroid >> collideWithPlayer [
 
 	sprite := ExplosionSprite uniqueInstance images.

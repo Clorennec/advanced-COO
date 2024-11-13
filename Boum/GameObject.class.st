@@ -116,3 +116,13 @@ GameObject >> updateFrame [
 	currentFrame < sprite size ifTrue: [ currentFrame := currentFrame + 1 ] ifFalse: [ currentFrame := 1 ].
 	blElement background: (sprite at: currentFrame)
 ]
+
+{ #category : 'accessing' }
+GameObject >> velocity [
+	^velocityVector 
+]
+
+{ #category : 'accessing' }
+GameObject >> velocity: aVector [
+	velocityVector := aVector 
+]
