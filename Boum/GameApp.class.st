@@ -56,7 +56,7 @@ GameApp >> start [
 { #category : 'initialization' }
 GameApp >> startGameWithShipType: aType color: aColor [
 
-    gameManager blSpace: blSpace.
-    gameManager addPlayerWithType: aType color: aColor.
-    gameManager startGameLoop
+	gameManager blSpace: blSpace.
+	gameManager addPlayerWithType: aType color: aColor.
+	gameManager startGameLoopProcess 
 ]

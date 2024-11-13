@@ -8,7 +8,8 @@ Class {
 		'player',
 		'asteroidGenerationProcess',
 		'collisionCheckProcess',
-		'pressedKeys'
+		'pressedKeys',
+		'playerControllerProcess'
 	],
 	#classInstVars : [
 		'instance'
@@ -194,7 +195,7 @@ GameManager >> removeFarAsteroids [
 ]
 
 { #category : 'as yet unclassified' }
-GameManager >> startAsteroidGeneration [
+GameManager >> startAsteroidGenerationProcess [
 
 	asteroidGenerationProcess := [
 	                             [ blSpace isOpened ] whileTrue: [
@@ -204,7 +205,7 @@ GameManager >> startAsteroidGeneration [
 ]
 
 { #category : 'as yet unclassified' }
-GameManager >> startCollisionCheck [
+GameManager >> startCollisionCheckProcess [
 
 	collisionCheckProcess := [
 	                         [ blSpace isOpened ] whileTrue: [
@@ -214,16 +215,25 @@ GameManager >> startCollisionCheck [
 ]
 
 { #category : 'as yet unclassified' }
-GameManager >> startGameLoop [
+GameManager >> startGameLoopProcess [
 
-	self startAsteroidGeneration.
-	self startCollisionCheck.
+	self startAsteroidGenerationProcess.
+	self startCollisionCheckProcess.
+	self startPlayerControllerProcess.
 	gameLoopProcess := [
 	                   [ blSpace isOpened ] whileTrue: [
 		                   self update.
-								self updatePlayerVelocity.
 		                   25 milliSeconds wait ].
 	                   self class reset ] fork
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> startPlayerControllerProcess [
+
+	playerControllerProcess := [
+	                           [ blSpace isOpened ] whileTrue: [
+		                           self updatePlayerVelocity.
+		                           25 milliSeconds wait ] ] fork
 ]
 
 { #category : 'initialization' }
