@@ -34,17 +34,18 @@ GameApp >> cleanup [
 ]
 
 { #category : 'initialization' }
-GameApp >> initialize [ 
-    super initialize.
-    blSpace := BlSpace new.
-    blSpace extent: 2400 @ 1350.
-    blSpace addEventHandlerOn: BlSpaceClosedEvent
-        do: [ :event | self cleanup ].
+GameApp >> initialize [
 
-    gameManager := GameManager reset; 
-                  instanceWithSpace: blSpace.
-    gameUI := GameUI newWithApp: self.
-    ^ self
+	super initialize.
+	blSpace := BlSpace new.
+	blSpace extent: 2400 @ 1350.
+	blSpace
+		addEventHandlerOn: BlSpaceClosedEvent
+		do: [ :event | self cleanup ].
+
+	gameManager := GameManager createWithSpace: blSpace.
+	gameUI := GameUI newWithApp: self.
+	^ self
 ]
 
 { #category : 'initialization' }

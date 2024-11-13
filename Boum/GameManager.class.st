@@ -19,24 +19,8 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-GameManager class >> instanceWithSpace: aBlSpace [
-    instance ifNil: [ 
-        instance := self basicNew.
-        instance initializeWithSpace: aBlSpace
-    ] ifNotNil: [
-        instance blSpace: aBlSpace
-    ].
-    ^ instance
-]
-
-{ #category : 'instance creation' }
-GameManager class >> new [
-    self error: 'Utilisez GameManager class>>instance pour obtenir l''instance unique.'.
-]
-
-{ #category : 'initialization' }
-GameManager class >> reset [
-    instance ifNotNil: [instance cleanup. instance := nil].
+GameManager class >> createWithSpace: aBlSpace [
+    ^ self new initializeWithSpace: aBlSpace
 ]
 
 { #category : 'adding' }
@@ -147,7 +131,7 @@ GameManager >> cleanup [
 		asteroidGenerationProcess terminate ].
 
 	gameObjects := OrderedCollection new.
-	pressedKeys := Set new.
+	pressedKeys := Dictionary new.
 
 	blSpace ifNotNil: [
 		blSpace root ifNotNil: [ blSpace root removeChildren ] ]
@@ -158,7 +142,7 @@ GameManager >> initialize [
 
 	super initialize.
 	gameObjects := OrderedCollection new.
-	pressedKeys := Set new.
+	pressedKeys := Dictionary new.
 	^ self
 ]
 
@@ -170,17 +154,14 @@ GameManager >> initializeWithSpace: aBlSpace [
 	^ self
 ]
 
-{ #category : 'event handling' }
+{ #category : 'steps - interactions' }
 GameManager >> keyDown: aKey [
-
-	pressedKeys add: aKey name
+	pressedKeys at: aKey name put: true
 ]
 
 { #category : 'steps - interactions' }
 GameManager >> keyUp: aKey [
-	pressedKeys remove: aKey name ifAbsent: [  ]
-
-	
+	pressedKeys at: aKey name put: false
 ]
 
 { #category : 'as yet unclassified' }
@@ -253,5 +234,9 @@ GameManager >> update [
 
 { #category : 'as yet unclassified' }
 GameManager >> updatePlayerVelocity [
-	player adjustVelocity: pressedKeys 
+
+	pressedKeys keysAndValuesDo: [ :key :isPressed |
+		isPressed ifTrue: [ player adjustVelocity: key ]
+		 ].
+	
 ]

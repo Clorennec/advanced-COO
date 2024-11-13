@@ -11,15 +11,14 @@ Player class >> newType: aType color: aColor [
 ]
 
 { #category : 'as yet unclassified' }
-Player >> adjustVelocity: pressedKeys [
+Player >> adjustVelocity: aKey [
 
 	| newVelocity speedIncrement |
 	speedIncrement := 0.25.
 
 	newVelocity := velocityVector.
 
-	pressedKeys do: [ :key |
-		key
+		aKey
 			caseOf: {
 					([ #UP ]
 					 -> [ newVelocity := newVelocity + (0 @ (0 - speedIncrement)) ]).
@@ -29,7 +28,7 @@ Player >> adjustVelocity: pressedKeys [
 					 -> [ newVelocity := newVelocity + (0 - speedIncrement @ 0) ]).
 					([ #RIGHT ]
 					 -> [ newVelocity := newVelocity + (speedIncrement @ 0) ]) }
-			otherwise: [  ] ].
+			otherwise: [  ].
 
 	(newVelocity x abs <= 5 and: [ newVelocity y abs <= 5 ]) ifTrue: [
 		velocityVector := newVelocity ]
