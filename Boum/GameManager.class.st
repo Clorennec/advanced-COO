@@ -7,7 +7,8 @@ Class {
 		'gameLoopProcess',
 		'player',
 		'asteroidGenerationProcess',
-		'collisionCheckProcess'
+		'collisionCheckProcess',
+		'pressedKeys'
 	],
 	#classInstVars : [
 		'instance'
@@ -61,16 +62,24 @@ GameManager >> addPlayer [
 
 { #category : 'adding' }
 GameManager >> addPlayerWithType: aType color: aColor [
-    Transcript show: 'blSpace: '; show: blSpace printString; cr.
-    blSpace ifNil: [ self error: 'BlSpace not initialized' ].
-    blSpace root ifNil: [ self error: 'BlSpace root not initialized' ].
-    
-    player := Player newType: aType color: aColor.
-    blSpace root addChild: player blElement.
-    blSpace addEventHandlerOn: BlKeyDownEvent
-        do: [ :event | player adjustVelocityForKey: event key ].
-    player currentPosition: 400 @ 300.
-    gameObjects add: player
+
+	Transcript
+		show: 'blSpace: ';
+		show: blSpace printString;
+		cr.
+	blSpace ifNil: [ self error: 'BlSpace not initialized' ].
+	blSpace root ifNil: [ self error: 'BlSpace root not initialized' ].
+
+	player := Player newType: aType color: aColor.
+	blSpace root addChild: player blElement.
+	blSpace
+		addEventHandlerOn: BlKeyDownEvent
+		do: [ :event | self keyDown: event key ].
+	blSpace
+		addEventHandlerOn: BlKeyUpEvent
+		do: [ :event | self keyUp: event key ].
+	player currentPosition: 400 @ 300.
+	gameObjects add: player
 ]
 
 { #category : 'as yet unclassified' }
@@ -133,9 +142,11 @@ GameManager >> checkCollisions [
 GameManager >> cleanup [
 
 	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
-	asteroidGenerationProcess ifNotNil: [ asteroidGenerationProcess terminate ].
-	
+	asteroidGenerationProcess ifNotNil: [
+		asteroidGenerationProcess terminate ].
+
 	gameObjects := OrderedCollection new.
+	pressedKeys := Set new.
 
 	blSpace ifNotNil: [
 		blSpace root ifNotNil: [ blSpace root removeChildren ] ]
@@ -143,17 +154,32 @@ GameManager >> cleanup [
 
 { #category : 'initialization' }
 GameManager >> initialize [
-    super initialize.
-    gameObjects := OrderedCollection new.
-    ^ self
+
+	super initialize.
+	gameObjects := OrderedCollection new.
+	pressedKeys := Set new.
+	^ self
 ]
 
 { #category : 'instance creation' }
 GameManager >> initializeWithSpace: aBlSpace [
-    self initialize. 
-    gameObjects := OrderedCollection new.
-    blSpace := aBlSpace.
-    ^ self
+
+	self initialize.
+	blSpace := aBlSpace.
+	^ self
+]
+
+{ #category : 'event handling' }
+GameManager >> keyDown: aKey [
+
+	pressedKeys add: aKey name
+]
+
+{ #category : 'steps - interactions' }
+GameManager >> keyUp: aKey [
+	pressedKeys remove: aKey name ifAbsent: [  ]
+
+	
 ]
 
 { #category : 'as yet unclassified' }
@@ -195,6 +221,7 @@ GameManager >> startGameLoop [
 	gameLoopProcess := [
 	                   [ blSpace isOpened ] whileTrue: [
 		                   self update.
+								self updatePlayerVelocity.
 		                   25 milliSeconds wait ].
 	                   self class reset ] fork
 ]
@@ -212,4 +239,9 @@ GameManager >> update [
 	toRemove do: [ :obj |
 		blSpace root removeChild: obj blElement.
 		gameObjects remove: obj ]
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> updatePlayerVelocity [
+	player adjustVelocity: pressedKeys 
 ]
