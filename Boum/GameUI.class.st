@@ -33,5 +33,6 @@ GameUI >> initializeWithGameManager: aGameManager [
 
 { #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
-	Menu showOn: app blSpace.
+
+	Menu showOn: app
 ]

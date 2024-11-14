@@ -14,12 +14,6 @@ Class {
 }
 
 { #category : 'accessing' }
-GameApp class >> instance [
-	instance ifNil: [ instance := self basicNew initialize ].
-	^ instance
-]
-
-{ #category : 'accessing' }
 GameApp >> blSpace [
 	^blSpace
 ]

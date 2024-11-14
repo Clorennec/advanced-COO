@@ -13,21 +13,28 @@ Class {
 		'colorSelector',
 		'colorPreview',
 		'currentColorIndex',
-		'playButton'
+		'playButton',
+		'app'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
 
 { #category : 'drawing' }
-Menu class >> showOn: aBlSpace [
+Menu class >> showOn: anApp [
 
 	| menu |
 	menu := self new.
-	menu blSpace: aBlSpace.
+	menu app: anApp.
+	menu blSpace: anApp blSpace .
 	menu setupElements.
-	menu showOn: aBlSpace.
+	menu showOn: anApp blSpace.
 	^ menu
+]
+
+{ #category : 'drawing' }
+Menu >> app: anApp [
+	app := anApp
 ]
 
 { #category : 'accessing' }
@@ -304,8 +311,9 @@ Menu >> showOn: aBlSpace [
 
 { #category : 'as yet unclassified' }
 Menu >> startGame [
+
 	blElement removeFromParent.
-	GameApp instance
+	app 
 		startGameWithShipType: 'Type' , currentSpaceship asString
 		color: (spaceshipColors at: currentColorIndex)
 ]

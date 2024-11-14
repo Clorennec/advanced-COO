@@ -1,6 +1,9 @@
 Class {
 	#name : 'Player',
 	#superclass : 'GameObject',
+	#instVars : [
+		'cooldown'
+	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
@@ -55,12 +58,23 @@ Player >> collideWithAsteroid: anAsteroid [
 ]
 
 { #category : 'initialization' }
+Player >> cooldown [
+	^cooldown 
+]
+
+{ #category : 'initialization' }
+Player >> cooldown: aBool [
+	cooldown := aBool.
+]
+
+{ #category : 'initialization' }
 Player >> initializeWithType: aType color: aColor [
 
 	super initialize.
 	sprite := (SpaceshipSprite type: aType color: aColor) images.
 	blElement background: (sprite at: currentFrame).
 	blElement extent: (sprite at: currentFrame) extent.
+	cooldown := false.
 	^ self
 ]
 

@@ -9,7 +9,8 @@ Class {
 		'asteroidGenerationProcess',
 		'collisionCheckProcess',
 		'pressedKeys',
-		'playerControllerProcess'
+		'playerControllerProcess',
+		'projectiles'
 	],
 	#classInstVars : [
 		'instance'
@@ -142,6 +143,7 @@ GameManager >> initialize [
 
 	super initialize.
 	gameObjects := OrderedCollection new.
+	projectiles := OrderedCollection new.
 	pressedKeys := Dictionary new.
 	^ self
 ]
@@ -164,11 +166,27 @@ GameManager >> keyUp: aKey [
 	pressedKeys at: aKey name put: false
 ]
 
+{ #category : 'initialization' }
+GameManager >> playerShoot [
+
+	| projectile |
+	player cooldown ifTrue: [ ^ self ].
+	projectile := Projectile new initializeWithPosition:
+		              player currentPosition.
+	blSpace root addChild: projectile blElement.
+	projectiles add: projectile.
+	player cooldown: true.
+    [
+        1000 milliSeconds wait.
+        player cooldown: false.
+    ] fork.
+]
+
 { #category : 'as yet unclassified' }
-GameManager >> removeFarAsteroids [
+GameManager >> removeFarObjects [
 
 	| toRemove |
-	toRemove := gameObjects select: [ :o | o currentPosition y > 1400 ].
+	toRemove := gameObjects select: [ :o | o currentPosition y > 1400 or: o currentPosition y < -300].
 
 	toRemove do: [ :o |
 		o blElement removeFromParent.
@@ -191,7 +209,7 @@ GameManager >> startCollisionCheckProcess [
 	collisionCheckProcess := [
 	                         [ blSpace isOpened ] whileTrue: [
 		                         self checkCollisions.
-		                         self removeFarAsteroids.
+		                         self removeFarObjects.
 		                         50 milliSeconds wait ] ] fork
 ]
 
@@ -214,6 +232,7 @@ GameManager >> startPlayerControllerProcess [
 	playerControllerProcess := [
 	                           [ blSpace isOpened ] whileTrue: [
 		                           self updatePlayerVelocity.
+		                           (pressedKeys at: #SPACE ifAbsent: [false]) ifTrue: [self playerShoot].
 		                           25 milliSeconds wait ] ] fork
 ]
 
@@ -226,6 +245,9 @@ GameManager >> update [
 	gameObjects do: [ :obj |
 		obj exploded ifTrue: [
 			obj currentFrame >= 42 ifTrue: [ toRemove add: obj ] ] ].
+	
+	projectiles do: [ :obj | 
+		obj update ].
 
 	toRemove do: [ :obj |
 		blSpace root removeChild: obj blElement.
