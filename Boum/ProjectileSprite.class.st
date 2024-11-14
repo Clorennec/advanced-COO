@@ -17,9 +17,7 @@ ProjectileSprite class >> uniqueInstance [
 
 { #category : 'as yet unclassified' }
 ProjectileSprite >> loadImages [
-
-	images add:
-		((Form fromFileNamed: 'C:\Users\louis\Downloads\Laser Sprite\03.png')
+	images add: ((Form fromFileNamed: 'C:\Users\louis\Downloads\Laser Sprite\03.png')
 			 rotateBy: #left
 			 centerAt: 62 @ 60)
 ]

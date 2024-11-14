@@ -32,6 +32,7 @@ GameApp >> initialize [
 
 	super initialize.
 	blSpace := BlSpace new.
+	blSpace root background: Color black.
 	blSpace extent: 2400 @ 1350.
 	blSpace
 		addEventHandlerOn: BlSpaceClosedEvent

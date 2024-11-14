@@ -2,7 +2,8 @@ Class {
 	#name : 'Player',
 	#superclass : 'GameObject',
 	#instVars : [
-		'cooldown'
+		'cooldown',
+		'cannonPositions'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -45,15 +46,8 @@ Player >> collideWith: anObject [
 
 { #category : 'as yet unclassified' }
 Player >> collideWithAsteroid [
-	
-]
-
-{ #category : 'as yet unclassified' }
-Player >> collideWithAsteroid: anAsteroid [
 	self takeDamage.
-	anAsteroid collideWithPlayer.
 	
-
 	
 ]
 
@@ -72,10 +66,22 @@ Player >> initializeWithType: aType color: aColor [
 
 	super initialize.
 	sprite := (SpaceshipSprite type: aType color: aColor) images.
+	cannonPositions := (SpaceshipSprite spaceshipConfigurations at: aType) at: 'cannonPositions'.
 	blElement background: (sprite at: currentFrame).
 	blElement extent: (sprite at: currentFrame) extent.
 	cooldown := false.
 	^ self
+]
+
+{ #category : 'game controls' }
+Player >> shoot [
+
+	| projectiles |
+	projectiles := OrderedCollection new.
+	cannonPositions do: [ :pos |
+		projectiles add:
+			(Projectile new initializeWithPosition: self currentPosition + pos) ].
+	^ projectiles
 ]
 
 { #category : 'as yet unclassified' }

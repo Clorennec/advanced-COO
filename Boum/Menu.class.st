@@ -130,7 +130,7 @@ Menu >> setupColorSelector [
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 	leftButton
-		addEventHandlerOn: BlMouseDownEvent
+		addEventHandlerOn: BlClickEvent
 		do: [ :e | self previousColor ].
 	leftButton addChild: leftArrow.
 
@@ -146,7 +146,7 @@ Menu >> setupColorSelector [
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 	rightButton
-		addEventHandlerOn: BlMouseDownEvent
+		addEventHandlerOn: BlClickEvent
 		do: [ :e | self nextColor ].
 	rightButton addChild: rightArrow.
 
@@ -258,7 +258,7 @@ Menu >> setupSpaceshipSelector [
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 	leftButton
-		addEventHandlerOn: BlMouseDownEvent
+		addEventHandlerOn: BlClickEvent
 		do: [ :e | self previousSpaceship ].
 	leftButton addChild: leftArrow.
 
@@ -274,7 +274,7 @@ Menu >> setupSpaceshipSelector [
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 	rightButton
-		addEventHandlerOn: BlMouseDownEvent
+		addEventHandlerOn: BlClickEvent
 		do: [ :e | self nextSpaceship ].
 	rightButton addChild: rightArrow.
 

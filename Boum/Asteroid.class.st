@@ -17,18 +17,18 @@ Asteroid >> collideWithAsteroid [
 ]
 
 { #category : 'as yet unclassified' }
-Asteroid >> collideWithPlayer [
-
-	sprite := ExplosionSprite uniqueInstance images.
-	exploded := true.
-]
-
-{ #category : 'as yet unclassified' }
 Asteroid >> collideWithPlayer: aPlayer [
 	self explode.
 	aPlayer collideWithAsteroid.
 
 	
+]
+
+{ #category : 'as yet unclassified' }
+Asteroid >> collideWithProjectile: aProjectile [
+
+	self explode.
+	aProjectile collideWithAsteroid
 ]
 
 { #category : 'initialization' }

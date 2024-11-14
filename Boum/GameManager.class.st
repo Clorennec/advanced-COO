@@ -107,7 +107,8 @@ GameManager >> checkCollisions [
 
 	notExploded do: [ :obj |
 		(player blElement boundsInSpace intersects:
-			 obj blElement boundsInSpace) ifTrue: [ (player collidesPixelPerfectWith: obj) ifTrue: [
+			 obj blElement boundsInSpace) ifTrue: [
+			(player collidesPixelPerfectWith: obj) ifTrue: [
 				toCollide add: {
 						player.
 						obj } ] ] ].
@@ -122,6 +123,33 @@ GameManager >> checkCollisions [
 	toRemove do: [ :obj |
 		blSpace root removeChild: obj blElement.
 		gameObjects remove: obj ]
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> checkProjectilesHit [
+
+	| toCollide notExploded removed projectileBounds objBounds |
+
+	toCollide := Set new.
+
+	notExploded := gameObjects select: [ :obj |
+		obj ~~ player and: [ obj exploded not ] ].
+
+	projectiles do: [ :proj |
+		projectileBounds := (proj blElement boundsInSpace) insetBy: 50.
+
+		notExploded do: [ :obj |
+			objBounds := (obj blElement boundsInSpace) insetBy: 15.
+
+			(projectileBounds intersects: objBounds) ifTrue: [
+				toCollide add: { proj. obj } ] ] ].
+
+	toCollide do: [ :collisionPair |
+		collisionPair first collideWith: collisionPair second ].
+
+	removed := projectiles select: [ :proj | proj exploded ].
+	removed do: [ :proj | projectiles remove: proj ].
+
 ]
 
 { #category : 'accessing' }
@@ -169,28 +197,36 @@ GameManager >> keyUp: aKey [
 { #category : 'initialization' }
 GameManager >> playerShoot [
 
-	| projectile |
+	| newProjectiles |
 	player cooldown ifTrue: [ ^ self ].
-	projectile := Projectile new initializeWithPosition:
-		              player currentPosition.
-	blSpace root addChild: projectile blElement.
-	projectiles add: projectile.
+	newProjectiles := player shoot.
+	newProjectiles do: [ :projectile |
+		blSpace root addChild: projectile blElement.
+		projectiles add: projectile ].
 	player cooldown: true.
-    [
-        1000 milliSeconds wait.
-        player cooldown: false.
-    ] fork.
+	[
+	1000 milliSeconds wait.
+	player cooldown: false ] fork
 ]
 
 { #category : 'as yet unclassified' }
 GameManager >> removeFarObjects [
 
-	| toRemove |
-	toRemove := gameObjects select: [ :o | o currentPosition y > 1400 or: o currentPosition y < -300].
+	| objectsToRemove projectilesToRemove|
+	objectsToRemove := gameObjects select: [ :o |
+		            o currentPosition y > 1400 or:
+			            o currentPosition y < -300 ].
 
-	toRemove do: [ :o |
+	objectsToRemove do: [ :o |
 		o blElement removeFromParent.
-		gameObjects remove: o ]
+		gameObjects remove: o ].
+	
+	projectilesToRemove := projectiles select: [  :p |
+		p currentPosition y < -250 ].
+	
+	projectilesToRemove do: [ :p | 
+		p blElement removeFromParent.
+		projectiles remove: p ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -200,7 +236,7 @@ GameManager >> startAsteroidGenerationProcess [
 	                             [ blSpace isOpened ] whileTrue: [
 		                             self addRandomAsteroid.
 		                             400 milliSeconds wait ].
-	                             self class reset ] fork
+	                              ] fork
 ]
 
 { #category : 'as yet unclassified' }
@@ -208,6 +244,7 @@ GameManager >> startCollisionCheckProcess [
 
 	collisionCheckProcess := [
 	                         [ blSpace isOpened ] whileTrue: [
+										self checkProjectilesHit.
 		                         self checkCollisions.
 		                         self removeFarObjects.
 		                         50 milliSeconds wait ] ] fork

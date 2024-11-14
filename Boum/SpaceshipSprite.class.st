@@ -16,8 +16,10 @@ SpaceshipSprite class >> spaceshipConfigurations [
 		  ('Type1' -> {
 			   ('reactorPositions' -> { (232 @ 369) }).
 			   ('path'
-			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\01\Spaceship_01_') }
-			   asDictionary).
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\01\Spaceship_01_').
+			   ('cannonPositions' -> {
+				    (94 @ 135).
+				    (284 @ 135) }) } asDictionary).
 		  ('Type2' -> {
 			   ('reactorPositions' -> {
 				    (192 @ 379).
