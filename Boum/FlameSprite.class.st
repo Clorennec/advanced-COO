@@ -1,28 +1,19 @@
 Class {
 	#name : 'FlameSprite',
-	#superclass : 'Sprite',
-	#classVars : [
-		'uniqueInstance'
-	],
+	#superclass : 'AbstractSprite',
 	#category : 'Boum',
 	#package : 'Boum'
 }
 
 { #category : 'accessing' }
-FlameSprite class >> uniqueInstance [
+FlameSprite class >> loadImages [
 
-	uniqueInstance ifNil: [ uniqueInstance := self basicNew initialize ].
-	^ uniqueInstance
-]
-
-{ #category : 'as yet unclassified' }
-FlameSprite >> initialize [ 
-	super initialize 
-]
-
-{ #category : 'as yet unclassified' }
-FlameSprite >> loadImages [
-
-	images add: (Form fromFileNamed: 'C:\Users\louis\Downloads\PNG\Flame_01.png').
-	images add: (Form fromFileNamed: 'C:\Users\louis\Downloads\PNG\Flame_02.png').
+	| collection |
+	collection := OrderedCollection new.
+	collection add:
+		(Form fromFileNamed: 'C:\Users\louis\Downloads\PNG\Flame_01.png').
+	collection add:
+		(Form fromFileNamed: 'C:\Users\louis\Downloads\PNG\Flame_02.png').
+	images := collection.
+	^images
 ]

@@ -1,6 +1,6 @@
 Class {
 	#name : 'SpaceshipSprite',
-	#superclass : 'Sprite',
+	#superclass : 'AbstractSprite',
 	#instVars : [
 		'reactorPositions',
 		'spaceshipImagePath'
@@ -8,6 +8,45 @@ Class {
 	#category : 'Boum',
 	#package : 'Boum'
 }
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> configureForType: aType color: aColor [
+
+	| config reactorPositions path collection |
+	collection := OrderedCollection new.
+
+	config := self spaceshipConfigurations at: aType.
+	reactorPositions := config at: 'reactorPositions'.
+
+	path := (config at: 'path') , aColor , '.png'.
+
+	2 timesRepeat: [ collection add: (Form fromFileNamed: path) ].
+	images := collection.
+	self drawFlames: reactorPositions.
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> drawFlames: somePositions [
+
+	1 to: 2 do: [ :i |
+		| flame image |
+		flame := FlameSprite imageAt: i.
+		image := self imageAt: i.
+		somePositions do: [ :pos |
+			1 to: flame width do: [ :x |
+				1 to: flame height do: [ :y |
+					| pixelColor |
+					pixelColor := flame colorAt: x @ y.
+					pixelColor alpha > 0 ifTrue: [
+						(image colorAt: pos + (x @ y)) alpha = 0 ifTrue: [
+							image colorAt: pos + (x @ y) put: pixelColor ] ] ] ] ] ]
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> loadImages [
+
+	^images
+]
 
 { #category : 'as yet unclassified' }
 SpaceshipSprite class >> spaceshipConfigurations [
