@@ -8,12 +8,8 @@ Class {
 { #category : 'as yet unclassified' }
 ProjectileSprite class >> loadImages [
 
-	| collection |
-	collection := OrderedCollection new.
-	collection add:
+	Images add:
 		((Form fromFileNamed: 'C:\Users\louis\Downloads\Laser Sprite\03.png')
 			 rotateBy: #left
 			 centerAt: 62 @ 60).
-	images := collection.
-	^images 
 ]

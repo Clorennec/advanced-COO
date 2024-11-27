@@ -22,11 +22,11 @@ SpaceshipSprite class >> configureForType: aType color: aColor [
 
 	2 timesRepeat: [ collection add: (Form fromFileNamed: path) ].
 	images := collection.
-	self drawFlames: reactorPositions.
+	self drawFlamesAtPositions: reactorPositions.
 ]
 
 { #category : 'as yet unclassified' }
-SpaceshipSprite class >> drawFlames: somePositions [
+SpaceshipSprite class >> drawFlamesAtPositions: somePositions [
 
 	1 to: 2 do: [ :i |
 		| flame image |
@@ -45,7 +45,22 @@ SpaceshipSprite class >> drawFlames: somePositions [
 { #category : 'as yet unclassified' }
 SpaceshipSprite class >> loadImages [
 
-	^images
+	self loadImagesForType: 'Type1' color: 'RED'
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> loadImagesForType: aType color: aColor [
+	| config reactorPositions path collection |
+	collection := OrderedCollection new.
+	
+	config := self spaceshipConfigurations at: aType.
+	reactorPositions := config at: 'reactorPositions'.
+	path := (config at: 'path') , aColor , '.png'.
+	
+	2 timesRepeat: [ collection add: (Form fromFileNamed: path) ].
+	
+	Images := collection.
+	self drawFlamesAtPositions: reactorPositions.
 ]
 
 { #category : 'as yet unclassified' }

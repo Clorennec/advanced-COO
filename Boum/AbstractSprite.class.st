@@ -16,13 +16,15 @@ AbstractSprite class >> imageAt: anIndex [
 { #category : 'accessing' }
 AbstractSprite class >> images [
 
+	Images ifNil: [ Images := OrderedCollection new ].
 	Images ifEmpty: [ self loadImages ].
 	^ Images
 ]
 
 { #category : 'class initialization' }
-AbstractSprite class >> initialize [ 
-	Images := OrderedCollection new.
+AbstractSprite class >> initialize [
+	<classVarInit>
+	Images := OrderedCollection new
 ]
 
 { #category : 'as yet unclassified' }

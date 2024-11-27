@@ -8,17 +8,14 @@ Class {
 { #category : 'as yet unclassified' }
 ExplosionSprite class >> loadImages [
 
-	| spriteSheet imageWidth imageHeight collection |
-	collection := OrderedCollection new.
+	| spriteSheet imageWidth imageHeight |
 	spriteSheet := Form fromFileNamed:
 		               'C:\Users\louis\Downloads\output-onlinepngtools.png'.
 	imageWidth := spriteSheet extent x / 6.
 	imageHeight := spriteSheet extent y / 7.
 	1 to: 7 do: [ :i |
 		1 to: 6 do: [ :j |
-			collection add: (spriteSheet copy: (Rectangle
+			Images add: (spriteSheet copy: (Rectangle
 						  origin: j - 1 * imageWidth @ (i - 1 * imageHeight)
 						  extent: imageWidth @ imageHeight)) ] ].
-	images := collection.
-	^images
 ]
