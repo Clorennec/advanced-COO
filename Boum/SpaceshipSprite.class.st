@@ -25,31 +25,46 @@ SpaceshipSprite class >> spaceshipConfigurations [
 				    (192 @ 379).
 				    (272 @ 379) }).
 			   ('path'
-			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_') }
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\02\Spaceship_02_').
+			   ('cannonPositions' -> {
+				    (74 @ 52).
+				    (304 @ 52) }) }
 			   asDictionary).
 		  ('Type3' -> {
 			   ('reactorPositions' -> { (232 @ 362) }).
 			   ('path'
-			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\03\Spaceship_03_') }
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\03\Spaceship_03_').
+			   ('cannonPositions' -> {
+				    (129 @ 138).
+				    (247 @ 138) }) }
 			   asDictionary).
 		  ('Type4' -> {
 			   ('reactorPositions' -> {
 				    (205 @ 374).
 				    (259 @ 374) }).
 			   ('path'
-			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\04\Spaceship_04_') }
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\04\Spaceship_04_').
+			   ('cannonPositions' -> {
+				    (144 @ 128).
+				    (234 @ 128) }) }
 			   asDictionary).
 		  ('Type5' -> {
 			   ('reactorPositions' -> { (232 @ 366) }).
 			   ('path'
-			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\05\Spaceship_05_') }
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\05\Spaceship_05_').
+			   ('cannonPositions' -> {
+				    (63 @ 159).
+				    (214 @ 159) }) }
 			   asDictionary).
 		  ('Type6' -> {
 			   ('reactorPositions' -> {
 				    (102 @ 366).
 				    (362 @ 366) }).
 			   ('path'
-			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\06\Spaceship_06_') }
+			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\06\Spaceship_06_').
+			   ('cannonPositions' -> {
+				    (122 @ 70).
+				    (256 @ 70) }) }
 			   asDictionary) } asDictionary
 ]
 
