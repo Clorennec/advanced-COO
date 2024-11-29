@@ -54,7 +54,7 @@ SpaceshipSprite class >> spaceshipConfigurations [
 			    -> 'C:\Users\louis\Downloads\PNG\Spaceships\05\Spaceship_05_').
 			   ('cannonPositions' -> {
 				    (63 @ 159).
-				    (214 @ 159) }) }
+				    (314 @ 159) }) }
 			   asDictionary).
 		  ('Type6' -> {
 			   ('reactorPositions' -> {
