@@ -124,7 +124,9 @@ GameManager >> checkProjectilesHit [
 		collisionPair first collideWith: collisionPair second ].
 
 	toRemove := projectiles select: [ :proj | proj exploded ].
-	toRemove do: [ :proj | self removeObject: proj.
+	toRemove do: [ :proj |
+		self increaseScoreBy: 100.
+		self removeObject: proj.
 		projectiles remove: proj ]
 ]
 
