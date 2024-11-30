@@ -69,15 +69,7 @@ GameObject >> currentPosition: aPosition [
 { #category : 'as yet unclassified' }
 GameObject >> explode [
 
-	| pos |
-	pos := currentPosition.
-	sprite := ExplosionSprite uniqueInstance images.
-	currentFrame := 1.
-	blElement background: (sprite at: 1).
 	exploded := true.
-	self currentPosition:
-		pos - ((sprite at: currentFrame) extent - blElement extent / 2).
-	blElement extent: (sprite at: currentFrame) extent
 ]
 
 { #category : 'accessing' }

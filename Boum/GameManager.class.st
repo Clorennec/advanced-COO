@@ -10,7 +10,9 @@ Class {
 		'collisionCheckProcess',
 		'pressedKeys',
 		'playerControllerProcess',
-		'projectiles'
+		'projectiles',
+		'gameUI',
+		'score'
 	],
 	#classInstVars : [
 		'instance'
@@ -20,50 +22,24 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-GameManager class >> createWithSpace: aBlSpace [
-    ^ self new initializeWithSpace: aBlSpace
+GameManager class >> createWithSpace: aBlSpace gameUI: aGameUI [
+
+	^ self new initializeWithSpace: aBlSpace gameUI: aGameUI
 ]
 
 { #category : 'adding' }
-GameManager >> addAsteroid [
+GameManager >> addAsteroid: anAsteroid [
 
-	| asteroid |
-	asteroid := Asteroid new.
-	blSpace root addChild: asteroid blElement.
-	asteroid currentPosition: 200 @ 50.
-	gameObjects add: asteroid
-]
-
-{ #category : 'adding' }
-GameManager >> addPlayer [
-
-	player := Player newType: 'Type1' color: 'GREEN'.
-	blSpace root addChild: player blElement.
-	blSpace
-		addEventHandlerOn: BlKeyDownEvent
-		do: [ :event | player adjustVelocityForKey: event key ].
-	player currentPosition: 400 @ 300.
-	gameObjects add: player
+	self renderObject: anAsteroid .
+	gameObjects add: anAsteroid 
 ]
 
 { #category : 'adding' }
 GameManager >> addPlayerWithType: aType color: aColor [
 
-	Transcript
-		show: 'blSpace: ';
-		show: blSpace printString;
-		cr.
-	blSpace ifNil: [ self error: 'BlSpace not initialized' ].
-	blSpace root ifNil: [ self error: 'BlSpace root not initialized' ].
-
 	player := Player newType: aType color: aColor.
-	blSpace root addChild: player blElement.
-	blSpace
-		addEventHandlerOn: BlKeyDownEvent
-		do: [ :event | self keyDown: event key ].
-	blSpace
-		addEventHandlerOn: BlKeyUpEvent
-		do: [ :event | self keyUp: event key ].
+	self renderObject: player.
+	self setupKeyEvents.
 	player currentPosition: 400 @ 300.
 	gameObjects add: player
 ]
@@ -79,8 +55,7 @@ GameManager >> addRandomAsteroid [
 	asteroid currentPosition: randPos.
 	asteroid velocity: randVect.
 
-	blSpace root addChild: asteroid blElement.
-	gameObjects add: asteroid
+	self addAsteroid: asteroid 
 ]
 
 { #category : 'accessing' }
@@ -128,28 +103,29 @@ GameManager >> checkCollisions [
 { #category : 'as yet unclassified' }
 GameManager >> checkProjectilesHit [
 
-	| toCollide notExploded removed projectileBounds objBounds |
-
+	| toCollide notExploded toRemove projectileBounds objBounds |
 	toCollide := Set new.
 
 	notExploded := gameObjects select: [ :obj |
-		obj ~~ player and: [ obj exploded not ] ].
+		               obj ~~ player and: [ obj exploded not ] ].
 
 	projectiles do: [ :proj |
-		projectileBounds := (proj blElement boundsInSpace) insetBy: 50.
+		projectileBounds := proj blElement boundsInSpace insetBy: 50.
 
 		notExploded do: [ :obj |
-			objBounds := (obj blElement boundsInSpace) insetBy: 15.
+			objBounds := obj blElement boundsInSpace insetBy: 15.
 
 			(projectileBounds intersects: objBounds) ifTrue: [
-				toCollide add: { proj. obj } ] ] ].
+				toCollide add: {
+						proj.
+						obj } ] ] ].
 
 	toCollide do: [ :collisionPair |
 		collisionPair first collideWith: collisionPair second ].
 
-	removed := projectiles select: [ :proj | proj exploded ].
-	removed do: [ :proj | projectiles remove: proj ].
-
+	toRemove := projectiles select: [ :proj | proj exploded ].
+	toRemove do: [ :proj | self removeObject: proj.
+		projectiles remove: proj ]
 ]
 
 { #category : 'accessing' }
@@ -158,12 +134,23 @@ GameManager >> cleanup [
 	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
 	asteroidGenerationProcess ifNotNil: [
 		asteroidGenerationProcess terminate ].
+	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ].
+	playerControllerProcess ifNotNil: [
+		playerControllerProcess terminate ].
 
 	gameObjects := OrderedCollection new.
+	projectiles := OrderedCollection new.
 	pressedKeys := Dictionary new.
 
 	blSpace ifNotNil: [
 		blSpace root ifNotNil: [ blSpace root removeChildren ] ]
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> increaseScoreBy: anInteger [
+
+	score := score + anInteger.
+	gameUI updateScore: score
 ]
 
 { #category : 'initialization' }
@@ -173,14 +160,16 @@ GameManager >> initialize [
 	gameObjects := OrderedCollection new.
 	projectiles := OrderedCollection new.
 	pressedKeys := Dictionary new.
+	score := 0.
 	^ self
 ]
 
 { #category : 'instance creation' }
-GameManager >> initializeWithSpace: aBlSpace [
+GameManager >> initializeWithSpace: aBlSpace gameUI: aGameUI [
 
 	self initialize.
 	blSpace := aBlSpace.
+	gameUI := aGameUI.
 	^ self
 ]
 
@@ -212,21 +201,42 @@ GameManager >> playerShoot [
 { #category : 'as yet unclassified' }
 GameManager >> removeFarObjects [
 
-	| objectsToRemove projectilesToRemove|
+	| objectsToRemove projectilesToRemove |
 	objectsToRemove := gameObjects select: [ :o |
-		            o currentPosition y > 1400 or:
-			            o currentPosition y < -300 ].
+		                   o currentPosition y > 1400 or:
+			                   o currentPosition y < -300 ].
 
 	objectsToRemove do: [ :o |
-		o blElement removeFromParent.
+		self removeObject: o.
 		gameObjects remove: o ].
-	
-	projectilesToRemove := projectiles select: [  :p |
-		p currentPosition y < -250 ].
-	
-	projectilesToRemove do: [ :p | 
-		p blElement removeFromParent.
+
+	projectilesToRemove := projectiles select: [ :p |
+		                       p currentPosition y < -250 ].
+
+	projectilesToRemove do: [ :p |
+		self removeObject: p.
 		projectiles remove: p ]
+]
+
+{ #category : 'rendering' }
+GameManager >> removeObject: anObject [
+
+	blSpace root removeChild: anObject blElement
+]
+
+{ #category : 'rendering' }
+GameManager >> renderObject: anObject [
+    blSpace root addChild: anObject blElement.
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> setupKeyEvents [
+	blSpace
+		addEventHandlerOn: BlKeyDownEvent
+		do: [ :event | self keyDown: event key ].
+	blSpace
+		addEventHandlerOn: BlKeyUpEvent
+		do: [ :event | self keyUp: event key ].
 ]
 
 { #category : 'as yet unclassified' }
@@ -259,8 +269,8 @@ GameManager >> startGameLoopProcess [
 	gameLoopProcess := [
 	                   [ blSpace isOpened ] whileTrue: [
 		                   self update.
-		                   25 milliSeconds wait ].
-	                   self class reset ] fork
+								self increaseScoreBy: 1.
+		                   25 milliSeconds wait ] ] fork
 ]
 
 { #category : 'as yet unclassified' }

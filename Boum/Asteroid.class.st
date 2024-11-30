@@ -31,6 +31,20 @@ Asteroid >> collideWithProjectile: aProjectile [
 	aProjectile collideWithAsteroid
 ]
 
+{ #category : 'as yet unclassified' }
+Asteroid >> explode [
+
+	| pos |
+	super explode.
+	pos := currentPosition.
+	sprite := ExplosionSprite uniqueInstance images.
+	currentFrame := 1.
+	blElement background: (sprite at: 1).
+	self currentPosition:
+		pos - ((sprite at: currentFrame) extent - blElement extent / 2).
+	blElement extent: (sprite at: currentFrame) extent
+]
+
 { #category : 'initialization' }
 Asteroid >> initialize [
 

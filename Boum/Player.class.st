@@ -3,7 +3,8 @@ Class {
 	#superclass : 'GameObject',
 	#instVars : [
 		'cooldown',
-		'cannonPositions'
+		'cannonPositions',
+		'health'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -59,6 +60,12 @@ Player >> cooldown [
 { #category : 'initialization' }
 Player >> cooldown: aBool [
 	cooldown := aBool.
+]
+
+{ #category : 'initialization' }
+Player >> initialize [ 
+	super initialize.
+	health := 3
 ]
 
 { #category : 'initialization' }

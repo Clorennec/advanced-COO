@@ -13,6 +13,13 @@ Class {
 	#package : 'Boum'
 }
 
+{ #category : 'execution' }
+GameApp class >> play [ 
+	^self new start
+
+	
+]
+
 { #category : 'accessing' }
 GameApp >> blSpace [
 	^blSpace
@@ -31,16 +38,22 @@ GameApp >> cleanup [
 GameApp >> initialize [
 
 	super initialize.
+	self setupBlSpace.
+	gameUI := GameUI createWithApp: self.
+	gameManager := GameManager createWithSpace: blSpace gameUI: gameUI.
+	^ self
+]
+
+{ #category : 'as yet unclassified' }
+GameApp >> setupBlSpace [
+
 	blSpace := BlSpace new.
 	blSpace root background: Color black.
 	blSpace extent: 2400 @ 1350.
+	blSpace position: 0@45.
 	blSpace
 		addEventHandlerOn: BlSpaceClosedEvent
-		do: [ :event | self cleanup ].
-
-	gameManager := GameManager createWithSpace: blSpace.
-	gameUI := GameUI newWithApp: self.
-	^ self
+		do: [ :event | self cleanup ]
 ]
 
 { #category : 'initialization' }
@@ -52,7 +65,7 @@ GameApp >> start [
 { #category : 'initialization' }
 GameApp >> startGameWithShipType: aType color: aColor [
 
-	gameManager blSpace: blSpace.
 	gameManager addPlayerWithType: aType color: aColor.
-	gameManager startGameLoopProcess 
+	gameManager startGameLoopProcess.
+	gameUI setupHUD 
 ]
