@@ -38,6 +38,7 @@ GameManager >> addAsteroid: anAsteroid [
 GameManager >> addPlayerWithType: aType color: aColor [
 
 	player := Player newType: aType color: aColor.
+	player addObserver: gameUI.
 	self renderObject: player.
 	self setupKeyEvents.
 	player currentPosition: 400 @ 300.

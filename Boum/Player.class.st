@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'cooldown',
 		'cannonPositions',
-		'health'
+		'health',
+		'observers'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -13,6 +14,11 @@ Class {
 { #category : 'instance creation' }
 Player class >> newType: aType color: aColor [
         ^self basicNew initializeWithType: aType color: aColor
+]
+
+{ #category : 'adding' }
+Player >> addObserver: anObserver [
+	observers add: anObserver 
 ]
 
 { #category : 'as yet unclassified' }
@@ -63,21 +69,29 @@ Player >> cooldown: aBool [
 ]
 
 { #category : 'initialization' }
-Player >> initialize [ 
+Player >> initialize [
+
 	super initialize.
-	health := 3
+	health := 3.
+	observers := OrderedCollection new.
 ]
 
 { #category : 'initialization' }
 Player >> initializeWithType: aType color: aColor [
 
-	super initialize.
+	self initialize.
 	sprite := (SpaceshipSprite type: aType color: aColor) images.
-	cannonPositions := (SpaceshipSprite spaceshipConfigurations at: aType) at: 'cannonPositions'.
+	cannonPositions := (SpaceshipSprite spaceshipConfigurations at: aType)
+		                   at: 'cannonPositions'.
 	blElement background: (sprite at: currentFrame).
 	blElement extent: (sprite at: currentFrame) extent.
 	cooldown := false.
 	^ self
+]
+
+{ #category : 'adding' }
+Player >> notifyObservers [
+    observers do: [ :observer | observer updateHearts: health ]
 ]
 
 { #category : 'game controls' }
@@ -93,7 +107,7 @@ Player >> shoot [
 
 { #category : 'as yet unclassified' }
 Player >> takeDamage [
-	
 
-	
+	health := health - 1.
+	self notifyObservers 
 ]

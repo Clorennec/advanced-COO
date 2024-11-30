@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'app',
 		'hud',
-		'scoreDisplay'
+		'scoreDisplay',
+		'heartsContainer',
+		'heartImage'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -17,6 +19,13 @@ GameUI class >> createWithApp: anApp [
 ]
 
 { #category : 'initialization' }
+GameUI >> initialize [
+
+	heartImage := (Form fromFileNamed:
+		              'C:\Users\louis\Downloads\pixel-heart.png') scaledToSize: 250@250
+]
+
+{ #category : 'initialization' }
 GameUI >> initializeWithApp: anApp [
     app := anApp.
     ^ self
@@ -26,19 +35,45 @@ GameUI >> initializeWithApp: anApp [
 GameUI >> setupHUD [
 
 	hud := BlElement new.
+	hud layout: BlFrameLayout new.
 	hud size: app blSpace extent.
 	app blSpace root addChild: hud.
 
-	scoreDisplay := BlTextElement new text: ('Score: ' asRopedText attributes:
+	scoreDisplay := BlTextElement new text:
+		                ('Score: ' asRopedText attributes:
 			                 { (BlTextForegroundAttribute paint: Color white) }).
-	scoreDisplay size: 100@100.
-	hud addChild: scoreDisplay
+	scoreDisplay size: 100 @ 100.
+	scoreDisplay constraintsDo: [ :c |
+		c frame horizontal alignLeft.
+		c frame vertical alignTop ].
+	hud addChild: scoreDisplay.
+
+	heartsContainer := BlElement new.
+	heartsContainer size: 300 @ 1000.
+	heartsContainer layout: BlFlowLayout new.
+	heartsContainer constraintsDo: [ :c |
+		c frame horizontal alignLeft.
+		c frame vertical alignBottom ].
+	hud addChild: heartsContainer
 ]
 
 { #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
 
 	Menu showOn: app
+]
+
+{ #category : 'as yet unclassified' }
+GameUI >> updateHearts: hearts [
+
+	heartsContainer removeChildren.
+
+	1 to: hearts do: [ :i |
+		| heart |
+		heart := BlElement new.
+		heart size: heartImage extent.
+		heart background: heartImage.
+		heartsContainer addChild: heart ]
 ]
 
 { #category : 'as yet unclassified' }
