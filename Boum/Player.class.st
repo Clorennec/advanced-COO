@@ -68,6 +68,11 @@ Player >> cooldown: aBool [
 	cooldown := aBool.
 ]
 
+{ #category : 'accessing' }
+Player >> health [
+	^health
+]
+
 { #category : 'initialization' }
 Player >> initialize [
 

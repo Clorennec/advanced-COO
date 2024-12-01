@@ -42,7 +42,8 @@ GameManager >> addPlayerWithType: aType color: aColor [
 	self renderObject: player.
 	self setupKeyEvents.
 	player currentPosition: 400 @ 300.
-	gameObjects add: player
+	gameObjects add: player.
+	player notifyObservers 
 ]
 
 { #category : 'as yet unclassified' }
@@ -270,9 +271,9 @@ GameManager >> startGameLoopProcess [
 	self startCollisionCheckProcess.
 	self startPlayerControllerProcess.
 	gameLoopProcess := [
-	                   [ blSpace isOpened ] whileTrue: [
+	                   [ blSpace isOpened and: player health > 0 ] whileTrue: [
 		                   self update.
-								self increaseScoreBy: 1.
+		                   self increaseScoreBy: 1.
 		                   25 milliSeconds wait ] ] fork
 ]
 

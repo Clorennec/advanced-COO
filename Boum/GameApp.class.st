@@ -65,7 +65,7 @@ GameApp >> start [
 { #category : 'initialization' }
 GameApp >> startGameWithShipType: aType color: aColor [
 
+	gameUI setupHUD.
 	gameManager addPlayerWithType: aType color: aColor.
 	gameManager startGameLoopProcess.
-	gameUI setupHUD 
 ]

@@ -22,7 +22,8 @@ GameUI class >> createWithApp: anApp [
 GameUI >> initialize [
 
 	heartImage := (Form fromFileNamed:
-		              'C:\Users\louis\Downloads\pixel-heart.png') scaledToSize: 250@250
+		               'C:\Users\louis\Downloads\pixel-heart-png.png')
+		              scaledToSize: 150 @ 150
 ]
 
 { #category : 'initialization' }
@@ -49,7 +50,7 @@ GameUI >> setupHUD [
 	hud addChild: scoreDisplay.
 
 	heartsContainer := BlElement new.
-	heartsContainer size: 300 @ 1000.
+	heartsContainer size: 600 @ 200.
 	heartsContainer layout: BlFlowLayout new.
 	heartsContainer constraintsDo: [ :c |
 		c frame horizontal alignLeft.
