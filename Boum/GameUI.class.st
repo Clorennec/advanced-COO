@@ -28,8 +28,10 @@ GameUI >> initialize [
 
 { #category : 'initialization' }
 GameUI >> initializeWithApp: anApp [
-    app := anApp.
-    ^ self
+	
+	self initialize.
+	app := anApp.
+	^ self
 ]
 
 { #category : 'as yet unclassified' }
@@ -68,6 +70,8 @@ GameUI >> showMainMenu [
 GameUI >> updateHearts: hearts [
 
 	heartsContainer removeChildren.
+	
+	hearts = 0 ifTrue: [ app stopGame. ].
 
 	1 to: hearts do: [ :i |
 		| heart |

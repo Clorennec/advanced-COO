@@ -271,10 +271,11 @@ GameManager >> startGameLoopProcess [
 	self startCollisionCheckProcess.
 	self startPlayerControllerProcess.
 	gameLoopProcess := [
-	                   [ blSpace isOpened and: player health > 0 ] whileTrue: [
-		                   self update.
-		                   self increaseScoreBy: 1.
-		                   25 milliSeconds wait ] ] fork
+	                   [ blSpace isOpened ]
+		                   whileTrue: [
+			                   self update.
+			                   self increaseScoreBy: 1.
+			                   25 milliSeconds wait ] ] fork
 ]
 
 { #category : 'as yet unclassified' }
@@ -285,6 +286,14 @@ GameManager >> startPlayerControllerProcess [
 		                           self updatePlayerVelocity.
 		                           (pressedKeys at: #SPACE ifAbsent: [false]) ifTrue: [self playerShoot].
 		                           25 milliSeconds wait ] ] fork
+]
+
+{ #category : 'as yet unclassified' }
+GameManager >> stopProcesses [
+	gameLoopProcess terminate.
+	asteroidGenerationProcess terminate.
+	playerControllerProcess terminate.
+	collisionCheckProcess terminate.
 ]
 
 { #category : 'initialization' }

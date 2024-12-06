@@ -69,3 +69,9 @@ GameApp >> startGameWithShipType: aType color: aColor [
 	gameManager addPlayerWithType: aType color: aColor.
 	gameManager startGameLoopProcess.
 ]
+
+{ #category : 'as yet unclassified' }
+GameApp >> stopGame [
+
+	gameManager stopProcesses
+]
