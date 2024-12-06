@@ -5,11 +5,22 @@ Class {
 		'images'
 	],
 	#classInstVars : [
-		'images'
+		'imagesCollection'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
+
+{ #category : 'accessing' }
+Sprite class >> images [
+	^imagesCollection ifNil: [ self loadImages ]
+]
+
+{ #category : 'as yet unclassified' }
+Sprite class >> loadImages [
+
+	self subclassResponsibility
+]
 
 { #category : 'instance creation' }
 Sprite class >> new [
