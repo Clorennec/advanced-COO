@@ -21,10 +21,10 @@ Projectile >> collideWithAsteroid [
 Projectile >> initialize [
 
 	super initialize.
-	sprite := ProjectileSprite uniqueInstance images.
-	blElement background: (sprite at: currentFrame).
-	blElement extent: (sprite at: currentFrame) extent.
-	self velocity: 0 @ -12.
+	sprite := ProjectileSprite images.
+	blElement background: (ProjectileSprite imageAt: currentFrame).
+	blElement extent: ProjectileSprite extent.
+	self velocity: 0 @ -12
 ]
 
 { #category : 'initialization' }

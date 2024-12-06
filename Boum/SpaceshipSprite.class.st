@@ -1,13 +1,54 @@
 Class {
 	#name : 'SpaceshipSprite',
 	#superclass : 'Sprite',
-	#instVars : [
-		'reactorPositions',
-		'spaceshipImagePath'
-	],
 	#category : 'Boum',
 	#package : 'Boum'
 }
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> configureWithType: aType color: aColor [
+
+	self loadImagesForType: aType color: aColor.
+	^ self
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> drawFlamesAtPositions: somePositions [
+
+	1 to: 2 do: [ :i |
+		| flame image |
+		flame := FlameSprite imageAt: i.
+		image := self imageAt: i.
+		somePositions do: [ :pos |
+			1 to: flame width do: [ :x |
+				1 to: flame height do: [ :y |
+					| pixelColor |
+					pixelColor := flame colorAt: x @ y.
+					pixelColor alpha > 0 ifTrue: [
+						(image colorAt: pos + (x @ y)) alpha = 0 ifTrue: [
+							image colorAt: pos + (x @ y) put: pixelColor ] ] ] ] ] ]
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> loadImages [
+
+	self loadImagesForType: 'Type1' color: 'RED'
+]
+
+{ #category : 'as yet unclassified' }
+SpaceshipSprite class >> loadImagesForType: aType color: aColor [
+	| config reactorPositions path |
+	imagesCollection := OrderedCollection new.
+	
+	config := self spaceshipConfigurations at: aType.
+	reactorPositions := config at: 'reactorPositions'.
+	path := (config at: 'path') , aColor , '.png'.
+	
+	2 timesRepeat: [ imagesCollection add: (Form fromFileNamed: path) ].
+	
+	self drawFlamesAtPositions: reactorPositions.
+	^imagesCollection 
+]
 
 { #category : 'as yet unclassified' }
 SpaceshipSprite class >> spaceshipConfigurations [
@@ -77,50 +118,4 @@ SpaceshipSprite class >> type: aType color: aColor [
 	instance configureWith: config color: aColor.
 	instance initialize.
 	^ instance
-]
-
-{ #category : 'as yet unclassified' }
-SpaceshipSprite >> configureWith: config color: aColor [
-
-	reactorPositions := config at: 'reactorPositions'.
-	spaceshipImagePath := (config at: 'path'), aColor, '.png'
-]
-
-{ #category : 'as yet unclassified' }
-SpaceshipSprite >> drawFlames [
-
-	1 to: 2 do: [ :i |
-		| flame image |
-		flame := FlameSprite uniqueInstance images at: i.
-		image := images at: i.
-		reactorPositions do: [ :pos |
-			1 to: flame width do: [ :x |
-				1 to: flame height do: [ :y |
-					| pixelColor |
-					pixelColor := flame colorAt: x @ y.
-					pixelColor alpha > 0 ifTrue: [
-						(image colorAt: pos + (x @ y)) alpha = 0 ifTrue: [
-							image colorAt: pos + (x @ y) put: pixelColor ] ] ] ] ]]
-]
-
-{ #category : 'as yet unclassified' }
-SpaceshipSprite >> initialize [
-
-	super initialize.
-	self drawFlames.
-	self scaleSize: 1
-]
-
-{ #category : 'as yet unclassified' }
-SpaceshipSprite >> loadImages [
-
-	| spaceshipImage |
-	spaceshipImage := Form fromFileNamed: spaceshipImagePath.
-	2 timesRepeat: [ images add: spaceshipImage deepCopy ]
-]
-
-{ #category : 'as yet unclassified' }
-SpaceshipSprite >> scaleSize: scalingFactor [
-    images := images collect: [ :image |
-        image scaledToSize: (image width * scalingFactor) @ (image height * scalingFactor) ].
 ]

@@ -85,11 +85,12 @@ Player >> initialize [
 Player >> initializeWithType: aType color: aColor [
 
 	self initialize.
-	sprite := (SpaceshipSprite type: aType color: aColor) images.
+	sprite := (SpaceshipSprite configureWithType: aType color: aColor)
+		          images.
 	cannonPositions := (SpaceshipSprite spaceshipConfigurations at: aType)
 		                   at: 'cannonPositions'.
-	blElement background: (sprite at: currentFrame).
-	blElement extent: (sprite at: currentFrame) extent.
+	blElement background: (SpaceshipSprite imageAt: currentFrame).
+	blElement extent: SpaceshipSprite extent.
 	cooldown := false.
 	^ self
 ]

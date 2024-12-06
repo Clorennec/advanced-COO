@@ -37,19 +37,18 @@ Asteroid >> explode [
 	| pos |
 	super explode.
 	pos := currentPosition.
-	sprite := ExplosionSprite uniqueInstance images.
+	sprite := ExplosionSprite images.
 	currentFrame := 1.
-	blElement background: (sprite at: 1).
-	self currentPosition:
-		pos - ((sprite at: currentFrame) extent - blElement extent / 2).
-	blElement extent: (sprite at: currentFrame) extent
+	blElement background: (ExplosionSprite imageAt: currentFrame).
+	self currentPosition: pos - (ExplosionSprite extent - blElement extent / 2).
+	blElement extent: ExplosionSprite extent
 ]
 
 { #category : 'initialization' }
 Asteroid >> initialize [
 
 	super initialize.
-	sprite := AsteroidSprite uniqueInstance images.
-	blElement background: (sprite at: currentFrame).
-	blElement extent: 102@102.
+	sprite := AsteroidSprite images.
+	blElement background: (AsteroidSprite imageAt: currentFrame).
+	blElement extent: AsteroidSprite extent
 ]

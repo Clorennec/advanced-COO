@@ -12,6 +12,17 @@ Class {
 }
 
 { #category : 'accessing' }
+Sprite class >> extent [
+	^(self imageAt: 1) extent
+]
+
+{ #category : 'accessing' }
+Sprite class >> imageAt: anInteger [
+	imagesCollection ifNil: [ self loadImages ].
+	^imagesCollection at: anInteger 
+]
+
+{ #category : 'accessing' }
 Sprite class >> images [
 	^imagesCollection ifNil: [ self loadImages ]
 ]
@@ -27,26 +38,4 @@ Sprite class >> new [
 
 	self error:
 		'Sprite est une classe abstraite et ne peut pas être instanciée directement.'
-]
-
-{ #category : 'accessing' }
-Sprite class >> uniqueInstance [
-
-	self subclassResponsibility 
-]
-
-{ #category : 'accessing' }
-Sprite >> images [ 
-	^ images
-]
-
-{ #category : 'as yet unclassified' }
-Sprite >> initialize [
-	images := OrderedCollection new.
-	self loadImages
-]
-
-{ #category : 'as yet unclassified' }
-Sprite >> loadImages [ 
-	self subclassResponsibility 
 ]
