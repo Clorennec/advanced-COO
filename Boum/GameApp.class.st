@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'gameManager',
 		'gameUI',
-		'blSpace'
+		'blSpace',
+		'activePlayerName'
 	],
 	#classInstVars : [
 		'instance'
@@ -21,13 +22,23 @@ GameApp class >> play [
 ]
 
 { #category : 'accessing' }
+GameApp >> activePlayerName [
+	^activePlayerName 
+]
+
+{ #category : 'accessing' }
+GameApp >> activePlayerName: aName [
+	activePlayerName := aName 
+]
+
+{ #category : 'accessing' }
 GameApp >> blSpace [
 	^blSpace
 ]
 
-{ #category : 'initialization' }
-GameApp >> cleanup [
-    gameManager ifNotNil: [ gameManager cleanup ].
+{ #category : 'accessing' }
+GameApp >> cleanup [ 
+	gameManager ifNotNil: [ gameManager cleanup ].
     blSpace ifNotNil: [
         blSpace root ifNotNil: [ blSpace root removeChildren ].
         blSpace close
@@ -41,6 +52,7 @@ GameApp >> initialize [
 	self setupBlSpace.
 	gameUI := GameUI createWithApp: self.
 	gameManager := GameManager createWithSpace: blSpace gameUI: gameUI.
+	activePlayerName := 'DefaultPlayer'.
 	^ self
 ]
 
@@ -73,5 +85,7 @@ GameApp >> startGameWithShipType: aType color: aColor [
 { #category : 'as yet unclassified' }
 GameApp >> stopGame [
 
-	gameManager stopProcesses
+	gameManager stopProcesses.
+	blSpace root removeAllChildren.
+	gameUI showGameOverScreen: gameManager score
 ]

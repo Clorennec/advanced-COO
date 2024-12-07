@@ -14,7 +14,9 @@ Class {
 		'colorPreview',
 		'currentColorIndex',
 		'playButton',
-		'app'
+		'app',
+		'playerNameInput',
+		'activePlayerName'
 	],
 	#category : 'Boum',
 	#package : 'Boum'
@@ -73,6 +75,7 @@ Menu >> initialize [
 	currentColorIndex := 1.
 	spaceshipColors := { 'RED'. 'GREEN'. 'NAVY BLUE'. 'ORANGE'. 'PURPLE'.
 	                   'YELLOW' }.
+	activePlayerName := 'DefaultPlayer'
 ]
 
 { #category : 'as yet unclassified' }
@@ -175,9 +178,10 @@ Menu >> setupElements [
 	self setupMenu.
 
 	self setupTitle.
+	self setupPlayerNameInput.
 	self setupSpaceshipSelector.
 	self setupColorSelector.
-	self setupPlayButton.
+	self setupPlayButton
 ]
 
 { #category : 'initialization' }
@@ -232,6 +236,18 @@ Menu >> setupPlayButton [
 	playButton addChild: buttonText.
 
 	menu addChild: playButton
+]
+
+{ #category : 'as yet unclassified' }
+Menu >> setupPlayerNameInput [
+
+	playerNameInput := ToTextField new
+		                   placeholderText: 'Enter you username here';
+		                   extent: 400 @ 50;
+		                   background: Color white.
+	playerNameInput constraintsDo: [ :c | c frame horizontal alignCenter ].
+	playerNameInput transformDo: [ :t | t translateBy: 0 @ 150 ].
+	menu addChild: playerNameInput
 ]
 
 { #category : 'as yet unclassified' }
@@ -313,7 +329,9 @@ Menu >> showOn: aBlSpace [
 Menu >> startGame [
 
 	blElement removeFromParent.
-	app 
+	playerNameInput edited
+		ifTrue: [ app activePlayerName: playerNameInput text asString ].
+	app
 		startGameWithShipType: 'Type' , currentSpaceship asString
 		color: (spaceshipColors at: currentColorIndex)
 ]

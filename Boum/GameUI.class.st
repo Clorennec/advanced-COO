@@ -61,6 +61,22 @@ GameUI >> setupHUD [
 ]
 
 { #category : 'as yet unclassified' }
+GameUI >> showGameOverScreen: aScore [
+
+	| displayContainer test |
+	displayContainer := BlElement new
+		                    layout: BlFrameLayout new;
+		                    extent: 2400 @ 1350.
+
+	app blSpace addChild: displayContainer.
+
+	test := BlTextElement new.
+	test text: (app activePlayerName asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
+	displayContainer addChild: test.
+]
+
+{ #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
 
 	Menu showOn: app

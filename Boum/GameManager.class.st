@@ -135,12 +135,7 @@ GameManager >> checkProjectilesHit [
 { #category : 'accessing' }
 GameManager >> cleanup [
 
-	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
-	asteroidGenerationProcess ifNotNil: [
-		asteroidGenerationProcess terminate ].
-	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ].
-	playerControllerProcess ifNotNil: [
-		playerControllerProcess terminate ].
+	self stopProcesses.
 
 	gameObjects := OrderedCollection new.
 	projectiles := OrderedCollection new.
@@ -290,10 +285,13 @@ GameManager >> startPlayerControllerProcess [
 
 { #category : 'as yet unclassified' }
 GameManager >> stopProcesses [
-	gameLoopProcess terminate.
-	asteroidGenerationProcess terminate.
-	playerControllerProcess terminate.
-	collisionCheckProcess terminate.
+
+	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
+	asteroidGenerationProcess ifNotNil: [
+		asteroidGenerationProcess terminate ].
+	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ].
+	playerControllerProcess ifNotNil: [
+		playerControllerProcess terminate ].
 ]
 
 { #category : 'initialization' }
