@@ -15,10 +15,9 @@ Class {
 }
 
 { #category : 'execution' }
-GameApp class >> play [ 
-	^self new start
+GameApp class >> play [
 
-	
+	^ self new start
 ]
 
 { #category : 'accessing' }
@@ -77,15 +76,16 @@ GameApp >> start [
 { #category : 'initialization' }
 GameApp >> startGameWithShipType: aType color: aColor [
 
+	blSpace root background: Color black.
 	gameUI setupHUD.
 	gameManager addPlayerWithType: aType color: aColor.
-	gameManager startGameLoopProcess.
+	gameManager startGameLoopProcess
 ]
 
 { #category : 'as yet unclassified' }
 GameApp >> stopGame [
 
-	gameManager stopProcesses.
 	blSpace root removeAllChildren.
+	gameManager stopProcesses.
 	gameUI showGameOverScreen: gameManager score
 ]

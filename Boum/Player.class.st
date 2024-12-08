@@ -78,7 +78,7 @@ Player >> initialize [
 
 	super initialize.
 	health := 3.
-	observers := OrderedCollection new.
+	observers := OrderedCollection new
 ]
 
 { #category : 'initialization' }

@@ -79,7 +79,8 @@ GameUI >> showGameOverScreen: aScore [
 { #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
 
-	Menu showOn: app
+	Menu showOn: app.
+	app blSpace root background: Color black
 ]
 
 { #category : 'as yet unclassified' }

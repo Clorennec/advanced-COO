@@ -28,9 +28,9 @@ Menu class >> showOn: anApp [
 	| menu |
 	menu := self new.
 	menu app: anApp.
-	menu blSpace: anApp blSpace .
+	menu blSpace: anApp blSpace.
 	menu setupElements.
-	menu showOn: anApp blSpace.
+	menu showOn: anApp .
 	^ menu
 ]
 
@@ -178,10 +178,11 @@ Menu >> setupElements [
 	self setupMenu.
 
 	self setupTitle.
-	self setupPlayerNameInput.
 	self setupSpaceshipSelector.
 	self setupColorSelector.
-	self setupPlayButton
+	self setupPlayButton.
+	self setupPlayerNameInput.
+	blElement background: Color black
 ]
 
 { #category : 'initialization' }
@@ -243,8 +244,7 @@ Menu >> setupPlayerNameInput [
 
 	playerNameInput := ToTextField new
 		                   placeholderText: 'Enter you username here';
-		                   extent: 400 @ 50;
-		                   background: Color white.
+		                   extent: 400 @ 50.
 	playerNameInput constraintsDo: [ :c | c frame horizontal alignCenter ].
 	playerNameInput transformDo: [ :t | t translateBy: 0 @ 150 ].
 	menu addChild: playerNameInput
