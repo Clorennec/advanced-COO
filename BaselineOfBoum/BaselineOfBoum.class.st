@@ -17,7 +17,5 @@ BaselineOfBoum >> baseline: spec [
 			with: [
 			spec repository: 'github://pharo-graphics/Toplo:v0.3.0/src' ].
 
-		spec
-			baseline: 'Bloc'
-			with: [ spec repository: 'github://pharo-graphics/Bloc:master/src' ] ]
+		spec baseline: 'Bloc' with: [ spec repository: 'github://pharo-graphics/Bloc:v2.2.0/src' ].]
 ]
