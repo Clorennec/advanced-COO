@@ -182,18 +182,40 @@ Menu >> setupElements [
 	self setupColorSelector.
 	self setupPlayButton.
 	self setupPlayerNameInput.
+	self setupLeaderboardDisplay.
 	blElement background: Color black
 ]
 
 { #category : 'as yet unclassified' }
 Menu >> setupLeaderboardDisplay [
 
-	| scores leaderboardContainer |
+	| leaderboard leaderboardTitle scoresListItem scores |
 	scores := app getHighScores.
-	
-   leaderboardContainer := BlElement new.
-	leaderboardContainer extent: 500@800.
-	leaderboardContainer.
+	leaderboard := BlElement new
+		               extent: 400 @ 1000;
+		               layout: BlFrameLayout new.
+	leaderboard constraintsDo: [ :c |
+		c frame vertical alignCenter.
+		c frame horizontal alignLeft ].
+	leaderboard transformDo: [ :t | t translateBy: 100 @ 0 ].
+
+	leaderboardTitle := BlTextElement new.
+	leaderboardTitle text: ('Leaderboard' asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
+	leaderboardTitle text fontSize: 40.
+	leaderboard addChild: leaderboardTitle.
+
+	scores do: [ :score |
+		| entry |
+		scoresListItem := BlTextElement new.
+		entry := (score at: 'name') , '     -     '
+		         , (score at: 'score' asString).
+		scoresListItem text: (entry asRopedText attributes:
+				 { (BlTextForegroundAttribute paint: Color white) }).
+		scoresListItem text fontSize: 20.
+		leaderboard addChild: scoresListItem ].
+
+	blElement addChild: leaderboard
 ]
 
 { #category : 'initialization' }
