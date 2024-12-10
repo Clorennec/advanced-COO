@@ -205,14 +205,17 @@ Menu >> setupLeaderboardDisplay [
 	leaderboardTitle text fontSize: 40.
 	leaderboard addChild: leaderboardTitle.
 
-	scores do: [ :score |
-		| entry |
+	1 to: scores size do: [ :i |
+		| score entry |
+		score := scores at: i.
 		scoresListItem := BlTextElement new.
 		entry := (score at: 'name') , '     -     '
-		         , (score at: 'score' asString).
+		         , ((score at: 'score') asString).
 		scoresListItem text: (entry asRopedText attributes:
 				 { (BlTextForegroundAttribute paint: Color white) }).
 		scoresListItem text fontSize: 20.
+		scoresListItem transformDo: [ :t | 
+			t translateBy: 0@50*i ].
 		leaderboard addChild: scoresListItem ].
 
 	blElement addChild: leaderboard

@@ -48,15 +48,13 @@ Leaderboard >> loadScores [
 	filePath exists ifTrue: [
 		| loadedScores |
 		[
-			loadedScores := STON fromString: filePath contents.
-			scores := loadedScores asOrderedCollection.
-			scores := scores 
-				sortUsing: [ :a :b | (a at: 'score') > (b at: 'score') ].
-			scores := scores first: (scores size min: 10)
-		] on: Error do: [ :ex | 
-			scores := OrderedCollection new
-		]
-	]
+		loadedScores := STON fromString: filePath contents.
+		scores := loadedScores asOrderedCollection.
+		scores := scores sort: [ :a :b |
+			          (a at: 'score') > (b at: 'score') ].
+		scores := scores first: (scores size min: 10) ]
+			on: Error
+			do: [ :ex | scores := OrderedCollection new ] ]
 ]
 
 { #category : 'initialization' }
