@@ -63,24 +63,77 @@ GameUI >> setupHUD [
 { #category : 'as yet unclassified' }
 GameUI >> showGameOverScreen: aScore [
 
-	| displayContainer test |
+	| displayContainer gameOverText playerNameText scoreText menuButton buttonText |
 	displayContainer := BlElement new
 		                    layout: BlFrameLayout new;
 		                    extent: 2400 @ 1350.
 
-	app blSpace addChild: displayContainer.
+	app blSpace root addChild: displayContainer.
 
-	test := BlTextElement new.
-	test text: (app activePlayerName asRopedText attributes:
-			 { (BlTextForegroundAttribute paint: Color white) }).
-	displayContainer addChild: test.
+	playerNameText := BlTextElement new
+		                  text:
+			                  (app activePlayerName asRopedText attributes: {
+						                   (BlTextForegroundAttribute paint: Color white).
+						                   (BlFontSizeAttribute size: 100) });
+		                  constraintsDo: [ :c |
+			                  c frame vertical alignCenter.
+			                  c frame horizontal alignCenter ];
+		                  transformDo: [ :t | t translateBy: 0 @ -300 ].
+
+
+	gameOverText := BlTextElement new
+		                text: ('Game Over' asRopedText attributes: {
+						                 (BlTextForegroundAttribute paint: Color white).
+						                 (BlFontSizeAttribute size: 200).
+						                 BlFontWeightAttribute bold });
+		                constraintsDo: [ :c |
+			                c frame vertical alignCenter.
+			                c frame horizontal alignCenter ].
+
+	scoreText := BlTextElement new
+		             text:
+			             (('Score: ' , aScore asString) asRopedText
+				              attributes: {
+						              (BlTextForegroundAttribute paint: Color white).
+						              (BlFontSizeAttribute size: 100) });
+		             constraintsDo: [ :c |
+			             c frame vertical alignCenter.
+			             c frame horizontal alignCenter ];
+		             transformDo: [ :t | t translateBy: 0 @ 300 ].
+		
+	menuButton := BlElement new extent: 200 @ 150.
+	menuButton geometry: (BlRoundedRectangleGeometry cornerRadius: 25).
+	menuButton constraintsDo: [ :c | c frame horizontal alignCenter ].
+	menuButton background: Color pink.
+	menuButton layout: BlFrameLayout new.
+	menuButton
+		addEventHandlerOn: BlMouseDownEvent
+		do: [ :e | self showMainMenu ].
+	menuButton transformDo: [ :t | t translateBy: 0 @ 950 ].
+
+	buttonText := BlTextElement new.
+	buttonText text: ('PLAY' asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color black) }).
+	buttonText text fontSize: 88.
+	buttonText constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+
+	menuButton addChild: buttonText.
+
+	displayContainer addChild: menuButton.
+
+
+	displayContainer addChild: gameOverText.
+	displayContainer addChild: playerNameText.
+	displayContainer addChild: scoreText
 ]
 
 { #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
 
-	Menu showOn: app.
-	app blSpace root background: Color black
+	app blSpace root removeChildren.
+	Menu showOn: app
 ]
 
 { #category : 'as yet unclassified' }

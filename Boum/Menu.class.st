@@ -320,9 +320,9 @@ Menu >> setupTitle [
 ]
 
 { #category : 'drawing' }
-Menu >> showOn: aBlSpace [
+Menu >> showOn: anApp [
 
-	blSpace root addChild: blElement
+	anApp blSpace root addChild: blElement
 ]
 
 { #category : 'as yet unclassified' }

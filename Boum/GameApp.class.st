@@ -50,7 +50,6 @@ GameApp >> initialize [
 	super initialize.
 	self setupBlSpace.
 	gameUI := GameUI createWithApp: self.
-	gameManager := GameManager createWithSpace: blSpace gameUI: gameUI.
 	activePlayerName := 'DefaultPlayer'.
 	^ self
 ]
@@ -77,6 +76,7 @@ GameApp >> start [
 GameApp >> startGameWithShipType: aType color: aColor [
 
 	blSpace root background: Color black.
+	gameManager := GameManager createWithSpace: blSpace gameUI: gameUI.
 	gameUI setupHUD.
 	gameManager addPlayerWithType: aType color: aColor.
 	gameManager startGameLoopProcess
@@ -85,7 +85,7 @@ GameApp >> startGameWithShipType: aType color: aColor [
 { #category : 'as yet unclassified' }
 GameApp >> stopGame [
 
-	blSpace root removeAllChildren.
-	gameManager stopProcesses.
+	gameManager cleanup.
+	blSpace root removeChildren.
 	gameUI showGameOverScreen: gameManager score
 ]

@@ -228,6 +228,11 @@ GameManager >> renderObject: anObject [
     blSpace root addChild: anObject blElement.
 ]
 
+{ #category : 'accessing' }
+GameManager >> score [
+	^score
+]
+
 { #category : 'as yet unclassified' }
 GameManager >> setupKeyEvents [
 	blSpace
@@ -265,12 +270,12 @@ GameManager >> startGameLoopProcess [
 	self startAsteroidGenerationProcess.
 	self startCollisionCheckProcess.
 	self startPlayerControllerProcess.
+	score := 0.
 	gameLoopProcess := [
-	                   [ blSpace isOpened ]
-		                   whileTrue: [
-			                   self update.
-			                   self increaseScoreBy: 1.
-			                   25 milliSeconds wait ] ] fork
+	                   [ blSpace isOpened ] whileTrue: [
+		                   self update.
+		                   self increaseScoreBy: 1.
+		                   25 milliSeconds wait ] ] fork
 ]
 
 { #category : 'as yet unclassified' }
@@ -286,12 +291,12 @@ GameManager >> startPlayerControllerProcess [
 { #category : 'as yet unclassified' }
 GameManager >> stopProcesses [
 
-	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
 	asteroidGenerationProcess ifNotNil: [
 		asteroidGenerationProcess terminate ].
-	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ].
 	playerControllerProcess ifNotNil: [
 		playerControllerProcess terminate ].
+	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
+	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ].
 ]
 
 { #category : 'initialization' }
