@@ -57,39 +57,62 @@ SpaceshipSprite class >> loadImagesForType: aType color: aColor [
 
 { #category : 'as yet unclassified' }
 SpaceshipSprite class >> spaceshipConfigurations [
-    ^ {
-        ('Type1' -> {
-            ('reactorPositions' -> { (232 @ 369) }).
-            ('path' -> 'pharo-local/iceberg/Clorennec/advanced-COO/Boum/assets/PNG/Spaceships/01/Spaceship_01_').
-            ('cannonPositions' -> { (94 @ 135). (284 @ 135) })
-        } asDictionary).
-        ('Type2' -> {
-            ('reactorPositions' -> { (192 @ 379). (272 @ 379) }).
-            ('path' -> 'pharo-local/iceberg/Clorennec/advanced-COO/Boum/assets/PNG/Spaceships/02/Spaceship_02_').
-            ('cannonPositions' -> { (74 @ 52). (304 @ 52) })
-        } asDictionary).
-        ('Type3' -> {
-            ('reactorPositions' -> { (232 @ 362) }).
-            ('path' -> 'pharo-local/iceberg/Clorennec/advanced-COO/Boum/assets/PNG/Spaceships/03/Spaceship_03_').
-            ('cannonPositions' -> { (129 @ 138). (247 @ 138) })
-        } asDictionary).
-        ('Type4' -> {
-            ('reactorPositions' -> { (205 @ 374). (259 @ 374) }).
-            ('path' -> 'pharo-local/iceberg/Clorennec/advanced-COO/Boum/assets/PNG/Spaceships/04/Spaceship_04_').
-            ('cannonPositions' -> { (144 @ 128). (234 @ 128) })
-        } asDictionary).
-        ('Type5' -> {
-            ('reactorPositions' -> { (232 @ 366) }).
-            ('path' -> 'pharo-local/iceberg/Clorennec/advanced-COO/Boum/assets/PNG/Spaceships/05/Spaceship_05_').
-            ('cannonPositions' -> { (63 @ 159). (314 @ 159) })
-        } asDictionary).
-        ('Type6' -> {
-            ('reactorPositions' -> { (102 @ 366). (362 @ 366) }).
-            ('path' -> 'pharo-local/iceberg/Clorennec/advanced-COO/Boum/assets/PNG/Spaceships/06/Spaceship_06_').
-            ('cannonPositions' -> { (122 @ 70). (256 @ 70) })
-        } asDictionary)
-    } asDictionary
 
+	^ {
+		  ('Type1' -> {
+			   ('reactorPositions' -> { (232 @ 369) }).
+			   ('path'
+			    ->
+			    'pharo-local/iceberg/Clorennec/advanced-COO/assets/PNG/Spaceships/01/Spaceship_01_').
+			   ('cannonPositions' -> {
+				    (94 @ 135).
+				    (284 @ 135) }) } asDictionary).
+		  ('Type2' -> {
+			   ('reactorPositions' -> {
+				    (192 @ 379).
+				    (272 @ 379) }).
+			   ('path'
+			    ->
+			    'pharo-local/iceberg/Clorennec/advanced-COO/assets/PNG/Spaceships/02/Spaceship_02_').
+			   ('cannonPositions' -> {
+				    (74 @ 52).
+				    (304 @ 52) }) } asDictionary).
+		  ('Type3' -> {
+			   ('reactorPositions' -> { (232 @ 362) }).
+			   ('path'
+			    ->
+			    'pharo-local/iceberg/Clorennec/advanced-COO/assets/PNG/Spaceships/03/Spaceship_03_').
+			   ('cannonPositions' -> {
+				    (129 @ 138).
+				    (247 @ 138) }) } asDictionary).
+		  ('Type4' -> {
+			   ('reactorPositions' -> {
+				    (205 @ 374).
+				    (259 @ 374) }).
+			   ('path'
+			    ->
+			    'pharo-local/iceberg/Clorennec/advanced-COO/assets/PNG/Spaceships/04/Spaceship_04_').
+			   ('cannonPositions' -> {
+				    (144 @ 128).
+				    (234 @ 128) }) } asDictionary).
+		  ('Type5' -> {
+			   ('reactorPositions' -> { (232 @ 366) }).
+			   ('path'
+			    ->
+			    'pharo-local/iceberg/Clorennec/advanced-COO/assets/PNG/Spaceships/05/Spaceship_05_').
+			   ('cannonPositions' -> {
+				    (63 @ 159).
+				    (314 @ 159) }) } asDictionary).
+		  ('Type6' -> {
+			   ('reactorPositions' -> {
+				    (102 @ 366).
+				    (362 @ 366) }).
+			   ('path'
+			    ->
+			    'pharo-local/iceberg/Clorennec/advanced-COO/assets/PNG/Spaceships/06/Spaceship_06_').
+			   ('cannonPositions' -> {
+				    (122 @ 70).
+				    (256 @ 70) }) } asDictionary) } asDictionary
 ]
 
 { #category : 'as yet unclassified' }

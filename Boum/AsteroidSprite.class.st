@@ -11,8 +11,8 @@ AsteroidSprite class >> loadImages [
 	| spriteSheet imageWidth imageHeight relaticePath |
 	imagesCollection := OrderedCollection new.
 	relaticePath := FileSystem workingDirectory / 'pharo-local'
-	                 / 'iceberg' / 'Clorennec' / 'advanced-COO' / 'Boum'
-	                 / 'assets' / 'o001Sp.png'.
+	                / 'iceberg' / 'Clorennec' / 'advanced-COO'
+	                / 'assets' / 'o001Sp.png'.
 	spriteSheet := Form fromFileNamed: relaticePath fullName.
 
 	imageWidth := spriteSheet extent x / 10.

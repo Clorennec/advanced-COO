@@ -37,9 +37,9 @@ Leaderboard >> initialize [
 	super initialize.
 	scores := OrderedCollection new.
 	filePath := FileSystem workingDirectory / 'pharo-local' / 'iceberg'
-	            / 'Clorennec' / 'advanced-COO' / 'Boum'
+	            / 'Clorennec' / 'advanced-COO' 
 	            / 'boum_leaderboard.ston'.
-	self loadScores 
+	self loadScores
 ]
 
 { #category : 'initialization' }

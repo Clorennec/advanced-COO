@@ -11,8 +11,8 @@ ExplosionSprite class >> loadImages [
 	| spriteSheet imageWidth imageHeight relaticePath |
 	imagesCollection := OrderedCollection new.
 	relaticePath := FileSystem workingDirectory / 'pharo-local'
-	                 / 'iceberg' / 'Clorennec' / 'advanced-COO' / 'Boum'
-	                 / 'assets' / 'output-onlinepngtools.png'.
+	                / 'iceberg' / 'Clorennec' / 'advanced-COO'
+	                / 'assets' / 'output-onlinepngtools.png'.
 	spriteSheet := Form fromFileNamed: relaticePath fullName.
 	imageWidth := spriteSheet extent x / 6.
 	imageHeight := spriteSheet extent y / 7.
