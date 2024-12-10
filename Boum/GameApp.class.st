@@ -36,12 +36,16 @@ GameApp >> blSpace [
 ]
 
 { #category : 'accessing' }
-GameApp >> cleanup [ 
+GameApp >> cleanup [
+
 	gameManager ifNotNil: [ gameManager cleanup ].
-    blSpace ifNotNil: [
-        blSpace root ifNotNil: [ blSpace root removeChildren ].
-        blSpace close
-    ]
+	blSpace ifNotNil: [
+		blSpace root ifNotNil: [ blSpace root removeChildren ] ]
+]
+
+{ #category : 'initialization' }
+GameApp >> clearDisplay [
+	blSpace root removeChildren
 ]
 
 { #category : 'initialization' }
@@ -67,9 +71,16 @@ GameApp >> setupBlSpace [
 ]
 
 { #category : 'initialization' }
+GameApp >> showMainMenu [ 
+	gameUI showMainMenu .
+]
+
+{ #category : 'initialization' }
 GameApp >> start [
-    gameUI showMainMenu.
-    blSpace show.
+
+	blSpace show.
+	gameManager ifNotNil: [ gameManager cleanup. ].
+	self showMainMenu
 ]
 
 { #category : 'initialization' }
@@ -85,7 +96,6 @@ GameApp >> startGameWithShipType: aType color: aColor [
 { #category : 'as yet unclassified' }
 GameApp >> stopGame [
 
-	gameManager cleanup.
-	blSpace root removeChildren.
+	self cleanup.
 	gameUI showGameOverScreen: gameManager score
 ]

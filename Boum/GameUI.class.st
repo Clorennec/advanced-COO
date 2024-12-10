@@ -100,7 +100,7 @@ GameUI >> showGameOverScreen: aScore [
 			             c frame vertical alignCenter.
 			             c frame horizontal alignCenter ];
 		             transformDo: [ :t | t translateBy: 0 @ 300 ].
-		
+
 	menuButton := BlElement new extent: 200 @ 150.
 	menuButton geometry: (BlRoundedRectangleGeometry cornerRadius: 25).
 	menuButton constraintsDo: [ :c | c frame horizontal alignCenter ].
@@ -108,11 +108,11 @@ GameUI >> showGameOverScreen: aScore [
 	menuButton layout: BlFrameLayout new.
 	menuButton
 		addEventHandlerOn: BlMouseDownEvent
-		do: [ :e | self showMainMenu ].
-	menuButton transformDo: [ :t | t translateBy: 0 @ 950 ].
+		do: [ :e | app showMainMenu ].
+	menuButton transformDo: [ :t | t translateBy: 0 @ 1150 ].
 
 	buttonText := BlTextElement new.
-	buttonText text: ('PLAY' asRopedText attributes:
+	buttonText text: ('MENU' asRopedText attributes:
 			 { (BlTextForegroundAttribute paint: Color black) }).
 	buttonText text fontSize: 88.
 	buttonText constraintsDo: [ :c |
@@ -132,7 +132,7 @@ GameUI >> showGameOverScreen: aScore [
 { #category : 'as yet unclassified' }
 GameUI >> showMainMenu [
 
-	app blSpace root removeChildren.
+	app clearDisplay .
 	Menu showOn: app
 ]
 

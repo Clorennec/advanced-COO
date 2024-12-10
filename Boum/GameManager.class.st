@@ -141,8 +141,6 @@ GameManager >> cleanup [
 	projectiles := OrderedCollection new.
 	pressedKeys := Dictionary new.
 
-	blSpace ifNotNil: [
-		blSpace root ifNotNil: [ blSpace root removeChildren ] ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -291,30 +289,30 @@ GameManager >> startPlayerControllerProcess [
 { #category : 'as yet unclassified' }
 GameManager >> stopProcesses [
 
-	asteroidGenerationProcess ifNotNil: [
+	[asteroidGenerationProcess ifNotNil: [
 		asteroidGenerationProcess terminate ].
 	playerControllerProcess ifNotNil: [
 		playerControllerProcess terminate ].
 	gameLoopProcess ifNotNil: [ gameLoopProcess terminate ].
-	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ].
+	collisionCheckProcess ifNotNil: [ collisionCheckProcess terminate ]] fork
 ]
 
 { #category : 'initialization' }
 GameManager >> update [
 
-	| toRemove |
+	| toRemove elementsToRemove |
 	toRemove := Set new.
+	elementsToRemove := Set new.
 	gameObjects do: [ :object | object update ].
 	gameObjects do: [ :obj |
 		obj exploded ifTrue: [
-			obj currentFrame >= 42 ifTrue: [ toRemove add: obj ] ] ].
-	
-	projectiles do: [ :obj | 
-		obj update ].
+			obj currentFrame >= 42 ifTrue: [ toRemove add: obj. elementsToRemove add: obj blElement ] ] ].
+
+	projectiles do: [ :obj | obj update ].
 
 	toRemove do: [ :obj |
-		blSpace root removeChild: obj blElement.
-		gameObjects remove: obj ]
+		gameObjects remove: obj ].
+	blSpace root removeChildren: elementsToRemove 
 ]
 
 { #category : 'as yet unclassified' }
