@@ -185,6 +185,17 @@ Menu >> setupElements [
 	blElement background: Color black
 ]
 
+{ #category : 'as yet unclassified' }
+Menu >> setupLeaderboardDisplay [
+
+	| scores leaderboardContainer |
+	scores := app getHighScores.
+	
+   leaderboardContainer := BlElement new.
+	leaderboardContainer extent: 500@800.
+	leaderboardContainer.
+]
+
 { #category : 'initialization' }
 Menu >> setupMenu [
 

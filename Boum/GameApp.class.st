@@ -5,7 +5,8 @@ Class {
 		'gameManager',
 		'gameUI',
 		'blSpace',
-		'activePlayerName'
+		'activePlayerName',
+		'leaderboard'
 	],
 	#classInstVars : [
 		'instance'
@@ -48,11 +49,17 @@ GameApp >> clearDisplay [
 	blSpace root removeChildren
 ]
 
+{ #category : 'as yet unclassified' }
+GameApp >> getHighScores [
+	^ leaderboard scores.
+]
+
 { #category : 'initialization' }
 GameApp >> initialize [
 
 	super initialize.
 	self setupBlSpace.
+	leaderboard := Leaderboard new.
 	gameUI := GameUI createWithApp: self.
 	activePlayerName := 'DefaultPlayer'.
 	^ self
@@ -97,5 +104,6 @@ GameApp >> startGameWithShipType: aType color: aColor [
 GameApp >> stopGame [
 
 	self cleanup.
+	leaderboard addScore: gameManager score playerName: activePlayerName.
 	gameUI showGameOverScreen: gameManager score
 ]

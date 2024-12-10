@@ -8,10 +8,12 @@ Class {
 { #category : 'as yet unclassified' }
 ExplosionSprite class >> loadImages [
 
-	| spriteSheet imageWidth imageHeight |
+	| spriteSheet imageWidth imageHeight relaticePath |
 	imagesCollection := OrderedCollection new.
-	spriteSheet := Form fromFileNamed:
-		               'C:\Users\louis\Downloads\output-onlinepngtools.png'.
+	relaticePath := FileSystem workingDirectory / 'pharo-local'
+	                 / 'iceberg' / 'Clorennec' / 'advanced-COO' / 'Boum'
+	                 / 'assets' / 'output-onlinepngtools.png'.
+	spriteSheet := Form fromFileNamed: relaticePath fullName.
 	imageWidth := spriteSheet extent x / 6.
 	imageHeight := spriteSheet extent y / 7.
 	1 to: 7 do: [ :i |
@@ -19,5 +21,5 @@ ExplosionSprite class >> loadImages [
 			imagesCollection add: (spriteSheet copy: (Rectangle
 						  origin: j - 1 * imageWidth @ (i - 1 * imageHeight)
 						  extent: imageWidth @ imageHeight)) ] ].
-	^imagesCollection 
+	^ imagesCollection
 ]

@@ -10,28 +10,36 @@ Class {
 }
 
 { #category : 'initialization' }
-Leaderboard >> addScore: aPlayerName withPoints: points [
-	| newEntry |
-	newEntry := { 
-		'name' -> aPlayerName. 
-		'score' -> points.
-		'date' -> Date today asString 
-	} asDictionary.
-	
-	scores add: newEntry.
-	scores := scores 
-		sortUsing: [ :a :b | (a at: 'score') > (b at: 'score') ].
+Leaderboard >> addScore: aScore playerName: aPlayerName [
 
-	scores := scores first: (scores size min: 10).
+    | newEntry sortedScores |
+    newEntry := {
+        ('name' -> aPlayerName).
+        ('score' -> aScore).
+        ('date' -> Date today asString)
+    } asDictionary.
 
-	self saveScores
+    scores add: newEntry.
+
+    sortedScores := scores sort: [ :a :b |
+        (a at: 'score') > (b at: 'score')
+    ].
+
+    scores := sortedScores first: (sortedScores size min: 10).
+
+    self saveScores
+
 ]
 
 { #category : 'initialization' }
 Leaderboard >> initialize [
+
 	super initialize.
 	scores := OrderedCollection new.
-	filePath := FileSystem workingDirectory / 'boum_leaderboard.ston'
+	filePath := FileSystem workingDirectory / 'pharo-local' / 'iceberg'
+	            / 'Clorennec' / 'advanced-COO' / 'Boum'
+	            / 'boum_leaderboard.ston'.
+	self loadScores 
 ]
 
 { #category : 'initialization' }
@@ -57,4 +65,9 @@ Leaderboard >> saveScores [
 	ston := STON toStringPretty: scores.
 	filePath writeStreamDo: [ :stream |
 		stream nextPutAll: ston]
+]
+
+{ #category : 'accessing' }
+Leaderboard >> scores [ 
+	^scores 
 ]

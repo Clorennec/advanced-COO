@@ -9,9 +9,14 @@ Class {
 FlameSprite class >> loadImages [
 
 	imagesCollection := OrderedCollection new.
+
 	imagesCollection add:
-		(Form fromFileNamed: 'C:\Users\louis\Downloads\PNG\Flame_01.png').
+		(Form fromFileNamed: (FileSystem workingDirectory / 'pharo-local'
+	                 / 'iceberg' / 'Clorennec' / 'advanced-COO' / 'Boum'
+	                 / 'assets' / 'PNG' / 'Flame_01.png') fullName).
 	imagesCollection add:
-		(Form fromFileNamed: 'C:\Users\louis\Downloads\PNG\Flame_02.png').
-	^imagesCollection 
+		(Form fromFileNamed: (FileSystem workingDirectory / 'pharo-local'
+	                 / 'iceberg' / 'Clorennec' / 'advanced-COO' / 'Boum'
+	                 / 'assets' / 'PNG' / 'Flame_02.png') fullName).
+	^ imagesCollection
 ]
