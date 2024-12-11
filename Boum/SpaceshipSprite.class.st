@@ -114,14 +114,3 @@ SpaceshipSprite class >> spaceshipConfigurations [
 				    (122 @ 70).
 				    (256 @ 70) }) } asDictionary) } asDictionary
 ]
-
-{ #category : 'as yet unclassified' }
-SpaceshipSprite class >> type: aType color: aColor [
-
-	| instance config |
-	config := self spaceshipConfigurations at: aType.
-	instance := self basicNew.
-	instance configureWith: config color: aColor.
-	instance initialize.
-	^ instance
-]
