@@ -1,9 +1,6 @@
 Class {
 	#name : 'Sprite',
 	#superclass : 'Object',
-	#instVars : [
-		'images'
-	],
 	#classInstVars : [
 		'imagesCollection'
 	],

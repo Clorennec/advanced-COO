@@ -5,15 +5,11 @@ Class {
 		'blSpace',
 		'blElement',
 		'menu',
-		'title',
-		'spaceshipSelector',
 		'spaceshipPreview',
 		'currentSpaceship',
 		'spaceshipColors',
-		'colorSelector',
 		'colorPreview',
 		'currentColorIndex',
-		'playButton',
 		'app',
 		'playerNameInput',
 		'activePlayerName'
@@ -27,21 +23,8 @@ Menu class >> showOn: anApp [
 
 	| menu |
 	menu := self new.
-	menu app: anApp.
-	menu blSpace: anApp blSpace.
-	menu setupElements.
-	menu showOn: anApp .
+	menu showOn: anApp.
 	^ menu
-]
-
-{ #category : 'drawing' }
-Menu >> app: anApp [
-	app := anApp
-]
-
-{ #category : 'accessing' }
-Menu >> blSpace: aBlSpace [
-	blSpace := aBlSpace 
 ]
 
 { #category : 'as yet unclassified' }
@@ -83,8 +66,10 @@ Menu >> nextColor [
 
 	currentColorIndex := currentColorIndex \\ 6 + 1.
 	spaceshipPreview background: self getSpaceshipImage.
-	colorPreview text: ((spaceshipColors at: currentColorIndex) asRopedText attributes:
+	colorPreview text:
+		((spaceshipColors at: currentColorIndex) asRopedText attributes:
 			 { (BlTextForegroundAttribute paint: Color white) }).
+	colorPreview text fontSize: 35.
 ]
 
 { #category : 'as yet unclassified' }
@@ -110,10 +95,10 @@ Menu >> previousSpaceship [
 	spaceshipPreview background: self getSpaceshipImage
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupColorSelector [
 
-	| leftButton leftArrow rightButton rightArrow |
+	| leftButton leftArrow rightButton rightArrow colorSelector |
 	colorSelector := BlElement new
 		                 extent: 800 @ 300;
 		                 layout: BlFrameLayout new.
@@ -157,6 +142,7 @@ Menu >> setupColorSelector [
 	colorPreview text:
 		((spaceshipColors at: currentColorIndex) asRopedText attributes:
 			 { (BlTextForegroundAttribute paint: Color white) }).
+	colorPreview text fontSize: 35.
 	colorPreview constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
@@ -168,7 +154,7 @@ Menu >> setupColorSelector [
 	menu addChild: colorSelector
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupElements [
 
 	blElement := BlElement new
@@ -186,7 +172,7 @@ Menu >> setupElements [
 	blElement background: Color black
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupLeaderboardDisplay [
 
 	| leaderboard leaderboardTitle scoresListItem scores |
@@ -250,16 +236,18 @@ Menu >> setupMenu [
 	blElement addChild: menu
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupPlayButton [
 
-	| buttonText |
+	| buttonText playButton |
 	playButton := BlElement new extent: 200 @ 150.
 	playButton geometry: (BlRoundedRectangleGeometry cornerRadius: 25).
 	playButton constraintsDo: [ :c | c frame horizontal alignCenter ].
 	playButton background: Color pink.
 	playButton layout: BlFrameLayout new.
-	playButton addEventHandlerOn: BlMouseDownEvent do: [ :e | self startGame].
+	playButton
+		addEventHandlerOn: BlMouseDownEvent
+		do: [ :e | self startGame ].
 	playButton transformDo: [ :t | t translateBy: 0 @ 950 ].
 
 	buttonText := BlTextElement new.
@@ -275,21 +263,21 @@ Menu >> setupPlayButton [
 	menu addChild: playButton
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupPlayerNameInput [
 
 	playerNameInput := ToTextField new
 		                   placeholderText: 'Enter you username here';
-		                   extent: 400 @ 50.
+		                   extent: 400 @ 75.
 	playerNameInput constraintsDo: [ :c | c frame horizontal alignCenter ].
 	playerNameInput transformDo: [ :t | t translateBy: 0 @ 150 ].
 	menu addChild: playerNameInput
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupSpaceshipSelector [
 
-	| leftButton leftArrow rightButton rightArrow spaceshipImage |
+	| leftButton leftArrow rightButton rightArrow spaceshipImage spaceshipSelector |
 	spaceshipSelector := BlElement new
 		                     extent: 800 @ 500;
 		                     layout: BlFrameLayout new.
@@ -343,9 +331,10 @@ Menu >> setupSpaceshipSelector [
 	menu addChild: spaceshipSelector
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 Menu >> setupTitle [
 
+	| title |
 	title := BlTextElement new.
 	title text: ('Jeu 12' asRopedText attributes:
 			 { (BlTextForegroundAttribute paint: Color white) }).
@@ -358,7 +347,10 @@ Menu >> setupTitle [
 { #category : 'drawing' }
 Menu >> showOn: anApp [
 
-	anApp blSpace root addChild: blElement
+	app := anApp.
+	blSpace := app blSpace.
+	self setupElements.
+	blSpace root addChild: blElement
 ]
 
 { #category : 'as yet unclassified' }
